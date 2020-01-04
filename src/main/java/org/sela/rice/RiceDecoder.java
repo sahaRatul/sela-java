@@ -1,6 +1,6 @@
 package org.sela.rice;
 
-public class RiceDecoder {
+public final class RiceDecoder {
     private int[] input;
     private int[] bitInput;
     private int sampleCount;

@@ -3,7 +3,7 @@ package org.sela.rice;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class RiceEncoder {
+public final class RiceEncoder {
     private int[] input;
     private long[] unsignedInput;
     private int[] output;
