@@ -18,12 +18,12 @@ public class RiceTest {
 
         // Encode
         RiceEncoder riceEnc = new RiceEncoder(input);
-        int[] encoded = riceEnc.encode();
+        int[] encoded = riceEnc.process();
         int optRiceParam = riceEnc.getOptimumParam();
 
         // Decode
         RiceDecoder riceDec = new RiceDecoder(encoded, input.length, optRiceParam);
-        int[] decoded = riceDec.decode();
+        int[] decoded = riceDec.process();
         assertArrayEquals(input, decoded);
     }
 }

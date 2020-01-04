@@ -49,7 +49,7 @@ public final class RiceDecoder {
         }
     }
 
-    public int[] decode() {
+    public int[] process() {
         generateEncodedBits();
         generateDecodedUnsignedInts();
         convertUnsignedToSigned();

@@ -75,7 +75,7 @@ public final class RiceEncoder {
         return optimumParam;
     }
 
-    public int[] encode() {
+    public int[] process() {
         convertSignedToUnsigned();
         calculateOptimumRiceParam();
         generateEncodedBits();
