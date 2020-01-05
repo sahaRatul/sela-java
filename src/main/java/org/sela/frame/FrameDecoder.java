@@ -4,7 +4,7 @@ import org.sela.data.*;
 import org.sela.lpc.SampleGenerator;
 import org.sela.rice.RiceDecoder;
 
-public class FrameDecoder {
+public final class FrameDecoder {
     private Frame frame;
 
     public FrameDecoder(Frame frame) {
