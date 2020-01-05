@@ -1,6 +1,7 @@
 package org.sela;
 
 import org.junit.Test;
+import org.sela.data.*;
 import org.sela.lpc.*;
 
 import static org.junit.Assert.*;
@@ -14,16 +15,16 @@ public class LpcTest {
             samples[i] = (int)(32767 * Math.sin(Math.toRadians(i)));
         }
 
+        LpcDecodedData input = new LpcDecodedData(samples);
+
         //Generate residues
-        ResidueGenerator resGen = new ResidueGenerator(samples);
-        int[] residues = resGen.process();
-        int[] quantizedReflectionCoefficients = resGen.getQuantizedReflectionCoefficients();
-        byte optimalOrder = resGen.getOptimalOrder();
+        ResidueGenerator resGen = new ResidueGenerator(input);
+        LpcEncodedData encoded = resGen.process();
 
         //Generate samples
-        SampleGenerator sampleGen = new SampleGenerator(residues, quantizedReflectionCoefficients, optimalOrder);
-        int[] decodedSamples = sampleGen.process();
+        SampleGenerator sampleGen = new SampleGenerator(encoded);
+        LpcDecodedData decoded = sampleGen.process();
 
-        assertArrayEquals(samples, decodedSamples);
+        assertArrayEquals(input.samples, decoded.samples);
     }
 }

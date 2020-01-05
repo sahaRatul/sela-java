@@ -1,12 +1,14 @@
 package org.sela.lpc;
 
+import org.sela.data.*;
+
 public final class SampleGenerator extends LinearPredictionBase {
     private int[] residues;
     private int[] samples;
     
-    public SampleGenerator(int[] residues, int[] quantizedReflectionCoefficients, byte optimalOrder) {
-        super(quantizedReflectionCoefficients, optimalOrder);
-        this.residues = residues;
+    public SampleGenerator(LpcEncodedData encodedData) {
+        super(encodedData.quantizedReflectionCoefficients, encodedData.optimalLpcOrder);
+        this.residues = encodedData.residues;
         this.samples = new int[residues.length];
     }
 
@@ -15,7 +17,7 @@ public final class SampleGenerator extends LinearPredictionBase {
         
         samples[0] = residues[0];
         
-        for (int i = 1; i <= super.optimalOrder; i++) {
+        for (int i = 1; i <= super.optimalLpcOrder; i++) {
             long temp = correction;
             for (int j = 1; j <= i; j++) {
                 temp -= super.linearPredictionCoefficients[j] * samples[i - j];
@@ -23,18 +25,18 @@ public final class SampleGenerator extends LinearPredictionBase {
             samples[i] = residues[i] - (int) (temp >> super.correctionFactor);
         }
 
-        for (int i = super.optimalOrder + 1; i < residues.length; i++) {
+        for (int i = super.optimalLpcOrder + 1; i < residues.length; i++) {
             long temp = correction;
-            for (int j = 0; j <= super.optimalOrder; j++)
+            for (int j = 0; j <= super.optimalLpcOrder; j++)
                 temp -= (super.linearPredictionCoefficients[j] * samples[i - j]);
             samples[i] = residues[i] - (int) (temp >> super.correctionFactor);
         }
     } 
 
-    public int[] process() {
+    public LpcDecodedData process() {
         super.dequantizeReflectionCoefficients();
         super.generatelinearPredictionCoefficients();
         generateSamples();
-        return samples;
+        return new LpcDecodedData(samples);
     }
 }

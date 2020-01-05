@@ -1,5 +1,8 @@
 package org.sela.lpc;
 
+import org.sela.data.LpcDecodedData;
+import org.sela.data.LpcEncodedData;
+
 public final class ResidueGenerator extends LinearPredictionBase {
     private int[] samples;
     private int[] residues;
@@ -9,8 +12,8 @@ public final class ResidueGenerator extends LinearPredictionBase {
     private final int maxShort = 32767;
     private final double sqrt2 = 1.4142135623730950488016887242096;
 
-    public ResidueGenerator(int[] samples) {
-        this.samples = samples;
+    public ResidueGenerator(LpcDecodedData data) {
+        this.samples = data.samples;
         this.quantizedSamples = new double[samples.length];
         this.autocorrelationFactors = new double[super.maxLpcOrder + 1];
         this.residues = new int[samples.length];
@@ -68,23 +71,23 @@ public final class ResidueGenerator extends LinearPredictionBase {
         }
     }
 
-    private void generateOptimalOrder() {
+    private void generateoptimalLpcOrder() {
         for (int i = super.maxLpcOrder - 1; i >= 0; i--) {
             if (Math.abs(super.reflectionCoefficients[i]) > 0.05) {
-                super.optimalOrder = (byte) (i + 1);
+                super.optimalLpcOrder = (byte) (i + 1);
                 break;
             }
         }
     }
 
     private void quantizeReflectionCoefficients() {
-        super.quantizedReflectionCoefficients = new int[super.optimalOrder];
+        super.quantizedReflectionCoefficients = new int[super.optimalLpcOrder];
 
         super.quantizedReflectionCoefficients[0] = (int) Math
                 .floor(64 * (-1 + (sqrt2 * Math.sqrt(super.reflectionCoefficients[0] + 1))));
         super.quantizedReflectionCoefficients[1] = (int) Math
                 .floor(64 * (-1 + (sqrt2 * Math.sqrt(-super.reflectionCoefficients[1] + 1))));
-        for (int i = 2; i < super.optimalOrder; i++) {
+        for (int i = 2; i < super.optimalLpcOrder; i++) {
             super.quantizedReflectionCoefficients[i] = (int) Math.floor(64 * super.reflectionCoefficients[i]);
         }
     }
@@ -94,7 +97,7 @@ public final class ResidueGenerator extends LinearPredictionBase {
         
         residues[0] = samples[0];
         
-        for (int i = 1; i <= super.optimalOrder; i++) {
+        for (int i = 1; i <= super.optimalLpcOrder; i++) {
             long temp = correction;
             for (int j = 1; j <= i; j++) {
                 temp += super.linearPredictionCoefficients[j] * samples[i - j];
@@ -102,32 +105,23 @@ public final class ResidueGenerator extends LinearPredictionBase {
             residues[i] = samples[i] - (int) (temp >> super.correctionFactor);
         }
 
-        for (int i = super.optimalOrder + 1; i < samples.length; i++) {
+        for (int i = super.optimalLpcOrder + 1; i < samples.length; i++) {
             long temp = correction;
-            for (int j = 0; j <= super.optimalOrder; j++)
+            for (int j = 0; j <= super.optimalLpcOrder; j++)
                 temp += (super.linearPredictionCoefficients[j] * samples[i - j]);
             residues[i] = samples[i] - (int) (temp >> super.correctionFactor);
         }
     }
 
-    public byte getOptimalOrder() {
-        return super.optimalOrder;
-    }
-
-    public int[] getQuantizedReflectionCoefficients() {
-        return quantizedReflectionCoefficients;
-    }
-
-    public int[] process() {
+    public LpcEncodedData process() {
         quantizeSamples();
         generateAutoCorrelation();
         generateReflectionCoefficients();
-        generateOptimalOrder();
+        generateoptimalLpcOrder();
         quantizeReflectionCoefficients();
         super.dequantizeReflectionCoefficients();
         super.generatelinearPredictionCoefficients();
         generateResidues();
-
-        return residues;
+        return new LpcEncodedData(optimalLpcOrder, quantizedReflectionCoefficients, residues);
     }
 }

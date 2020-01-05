@@ -3,21 +3,23 @@ package org.sela.rice;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.sela.data.*;
+
 public final class RiceEncoder {
     private int[] input;
     private long[] unsignedInput;
     private int[] output;
     private int[] bitOutput;
     private ArrayList<Integer> bitSizes;
-    private int optimumParam;
+    private int optimumRiceParam;
     private int requiredBits;
     private final int maxRiceParam = 20;
 
-    public RiceEncoder(int[] input) {
-        this.input = input;
+    public RiceEncoder(RiceDecodedData data) {
+        this.input = data.decodedData;
         this.unsignedInput = new long[input.length];
         this.bitSizes = new ArrayList<Integer>(maxRiceParam);
-        optimumParam = 0;
+        optimumRiceParam = 0;
         requiredBits = 0;
     }
 
@@ -37,7 +39,7 @@ public final class RiceEncoder {
             }
             bitSizes.add(temp);
             requiredBits = Collections.min(bitSizes);
-            optimumParam = bitSizes.indexOf(requiredBits);
+            optimumRiceParam = bitSizes.indexOf(requiredBits);
         }
     }
 
@@ -46,7 +48,7 @@ public final class RiceEncoder {
         int temp = 0, bits = 0;
         
         for (int i = 0; i < unsignedInput.length; i++) {
-            temp = (int)(unsignedInput[i] >> optimumParam);
+            temp = (int)(unsignedInput[i] >> optimumRiceParam);
             // Write out 'temp' number of ones
             for (int j = 0; j < temp; j++) {
                 bitOutput[bits++] = 0b1;
@@ -56,7 +58,7 @@ public final class RiceEncoder {
             bits++;
 
             // Write out last param bits of input
-            for (int j = (optimumParam - 1); j >= 0; j--) {
+            for (int j = (optimumRiceParam - 1); j >= 0; j--) {
                 bitOutput[bits++] = (int)((unsignedInput[i] >> j) & 0b1);
             }
         }
@@ -71,15 +73,11 @@ public final class RiceEncoder {
         }
     }
 
-    public int getOptimumParam() {
-        return optimumParam;
-    }
-
-    public int[] process() {
+    public RiceEncodedData process() {
         convertSignedToUnsigned();
         calculateOptimumRiceParam();
         generateEncodedBits();
         writeInts();
-        return output;
+        return new RiceEncodedData(optimumRiceParam, input.length, output);
     }
 }
