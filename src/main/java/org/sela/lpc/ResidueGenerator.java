@@ -18,7 +18,7 @@ public final class ResidueGenerator extends LinearPredictionBase {
 
     private void quantizeSamples() {
         for (int i = 0; i < samples.length; i++) {
-            quantizedSamples[i] = samples[i] / maxShort;
+            quantizedSamples[i] = (double)samples[i] / maxShort;
         }
     }
 
@@ -31,13 +31,19 @@ public final class ResidueGenerator extends LinearPredictionBase {
         }
         mean = sum / quantizedSamples.length;
 
-        // Generate reflection coefficients
+        // Generate autocorrelation coefficients
         for (int i = 0; i <= super.maxLpcOrder; i++) {
             autocorrelationFactors[i] = 0.0;
             for (int j = i; j < quantizedSamples.length; j++) {
                 autocorrelationFactors[i] += (quantizedSamples[j] - mean) * (quantizedSamples[j - i] - mean);
             }
         }
+
+        //Normalise the coefficients
+        for (int i = 1; i <= super.maxLpcOrder; i++) {
+            autocorrelationFactors[i] /= autocorrelationFactors[0];
+        }
+		autocorrelationFactors[0] = 1.0;
     }
 
     private void generateReflectionCoefficients() {
@@ -45,7 +51,7 @@ public final class ResidueGenerator extends LinearPredictionBase {
         double[][] gen = new double[2][super.maxLpcOrder];
 
         for (int i = 0; i < super.maxLpcOrder; i++) {
-            gen[0][i] = gen[1][i] = autocorrelationFactors[i];
+            gen[0][i] = gen[1][i] = autocorrelationFactors[i + 1];
         }
 
         error = autocorrelationFactors[0];
@@ -84,7 +90,7 @@ public final class ResidueGenerator extends LinearPredictionBase {
     }
 
     private void generateResidues() {
-        long correction = (long) 1 << super.correctionFactor;
+        long correction = (long) 1 << (super.correctionFactor - 1);
         
         residues[0] = samples[0];
         

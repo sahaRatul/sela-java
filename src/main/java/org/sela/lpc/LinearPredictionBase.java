@@ -50,7 +50,7 @@ public class LinearPredictionBase {
                 lpcTmp[j] += reflectionCoefficients[i] * lpcTmp[i - 1 - j];
                 lpcTmp[i - 1 - j] += reflectionCoefficients[i] * tmp;
             }
-            if (i > 1) {
+            if (i % 2 == 1) {
                 lpcTmp[j] += lpcTmp[j] * reflectionCoefficients[i];
             }
 

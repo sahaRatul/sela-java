@@ -11,14 +11,14 @@ public final class SampleGenerator extends LinearPredictionBase {
     }
 
     private void generateSamples() {
-        long correction = (long) 1 << super.correctionFactor;
+        long correction = (long) 1 << (super.correctionFactor - 1);
         
         samples[0] = residues[0];
         
         for (int i = 1; i <= super.optimalOrder; i++) {
             long temp = correction;
             for (int j = 1; j <= i; j++) {
-                temp += super.linearPredictionCoefficients[j] * residues[i - j];
+                temp -= super.linearPredictionCoefficients[j] * samples[i - j];
             }
             samples[i] = residues[i] - (int) (temp >> super.correctionFactor);
         }
@@ -26,7 +26,7 @@ public final class SampleGenerator extends LinearPredictionBase {
         for (int i = super.optimalOrder + 1; i < residues.length; i++) {
             long temp = correction;
             for (int j = 0; j <= super.optimalOrder; j++)
-                temp += (super.linearPredictionCoefficients[j] * residues[i - j]);
+                temp -= (super.linearPredictionCoefficients[j] * samples[i - j]);
             samples[i] = residues[i] - (int) (temp >> super.correctionFactor);
         }
     } 
