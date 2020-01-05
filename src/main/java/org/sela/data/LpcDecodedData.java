@@ -6,4 +6,4 @@ public final class LpcDecodedData {
     public LpcDecodedData(int[] samples) {
         this.samples = samples;
     }
-} 
+}

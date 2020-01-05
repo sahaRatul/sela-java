@@ -61,7 +61,8 @@ public class LinearPredictionBase {
 
         // Select optimum order row from matrix
         for (int i = 0; i < optimalLpcOrder; i++) {
-            linearPredictionCoefficients[i + 1] = (long) (correction * linearPredictionCoefficientMatrix[optimalLpcOrder - 1][i]);
+            linearPredictionCoefficients[i
+                    + 1] = (long) (correction * linearPredictionCoefficientMatrix[optimalLpcOrder - 1][i]);
         }
     }
 }

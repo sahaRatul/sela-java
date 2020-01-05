@@ -3,7 +3,7 @@ package org.sela.data;
 public final class SubFrame {
     // Audio Channel number - 1, 2, etc
     public byte channel;
-    
+
     // Reflection coefficient data
     public byte reflectionCoefficientRiceParam;
     public short reflectionCoefficientRequiredInts;
@@ -19,14 +19,14 @@ public final class SubFrame {
     public SubFrame(byte channel, RiceEncodedData reflectionData, RiceEncodedData residueData) {
         this.channel = channel;
 
-        this.reflectionCoefficientRiceParam = (byte)reflectionData.optimumRiceParam;
-        this.reflectionCoefficientRequiredInts = (short)reflectionData.encodedData.length;
-        this.optimumLpcOrder = (byte)reflectionData.dataCount;
+        this.reflectionCoefficientRiceParam = (byte) reflectionData.optimumRiceParam;
+        this.reflectionCoefficientRequiredInts = (short) reflectionData.encodedData.length;
+        this.optimumLpcOrder = (byte) reflectionData.dataCount;
         this.encodedReflectionCoefficients = reflectionData.encodedData;
 
-        this.residueRiceParam = (byte)residueData.optimumRiceParam;
-        this.residueRequiredInts = (short)residueData.encodedData.length;
-        this.samplesPerChannel = (short)residueData.dataCount;
+        this.residueRiceParam = (byte) residueData.optimumRiceParam;
+        this.residueRequiredInts = (short) residueData.encodedData.length;
+        this.samplesPerChannel = (short) residueData.dataCount;
         this.encodedResidues = residueData.encodedData;
     }
 }

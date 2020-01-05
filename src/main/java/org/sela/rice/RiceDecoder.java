@@ -39,7 +39,8 @@ public final class RiceDecoder {
             unsignedOutput[count] = temp << optimumRiceParam;
             // Read the last 'optimumRiceParam' number of bits and add them to output
             for (i = 1; i < (optimumRiceParam + 1); i++) {
-                unsignedOutput[count] = unsignedOutput[count] | ((long)bitInput[bitReadCounter++] << (optimumRiceParam - i));
+                unsignedOutput[count] = unsignedOutput[count]
+                        | ((long) bitInput[bitReadCounter++] << (optimumRiceParam - i));
             }
             count++;
         }
@@ -47,7 +48,8 @@ public final class RiceDecoder {
 
     private void convertUnsignedToSigned() {
         for (int i = 0; i < output.length; i++) {
-            output[i] = (int)(((unsignedOutput[i] & 0x01) == 0x01) ? -((unsignedOutput[i] + 1) >> 1) : (unsignedOutput[i] >> 1));
+            output[i] = (int) (((unsignedOutput[i] & 0x01) == 0x01) ? -((unsignedOutput[i] + 1) >> 1)
+                    : (unsignedOutput[i] >> 1));
         }
     }
 

@@ -21,7 +21,7 @@ public final class ResidueGenerator extends LinearPredictionBase {
 
     private void quantizeSamples() {
         for (int i = 0; i < samples.length; i++) {
-            quantizedSamples[i] = (double)samples[i] / maxShort;
+            quantizedSamples[i] = (double) samples[i] / maxShort;
         }
     }
 
@@ -42,11 +42,11 @@ public final class ResidueGenerator extends LinearPredictionBase {
             }
         }
 
-        //Normalise the coefficients
+        // Normalise the coefficients
         for (int i = 1; i <= super.maxLpcOrder; i++) {
             autocorrelationFactors[i] /= autocorrelationFactors[0];
         }
-		autocorrelationFactors[0] = 1.0;
+        autocorrelationFactors[0] = 1.0;
     }
 
     private void generateReflectionCoefficients() {
@@ -83,10 +83,14 @@ public final class ResidueGenerator extends LinearPredictionBase {
     private void quantizeReflectionCoefficients() {
         super.quantizedReflectionCoefficients = new int[super.optimalLpcOrder];
 
-        super.quantizedReflectionCoefficients[0] = (int) Math
-                .floor(64 * (-1 + (sqrt2 * Math.sqrt(super.reflectionCoefficients[0] + 1))));
-        super.quantizedReflectionCoefficients[1] = (int) Math
-                .floor(64 * (-1 + (sqrt2 * Math.sqrt(-super.reflectionCoefficients[1] + 1))));
+        if (super.quantizedReflectionCoefficients.length > 0) {
+            super.quantizedReflectionCoefficients[0] = (int) Math
+                    .floor(64 * (-1 + (sqrt2 * Math.sqrt(super.reflectionCoefficients[0] + 1))));
+        }
+        if (super.quantizedReflectionCoefficients.length > 1) {
+            super.quantizedReflectionCoefficients[1] = (int) Math
+                    .floor(64 * (-1 + (sqrt2 * Math.sqrt(-super.reflectionCoefficients[1] + 1))));
+        }
         for (int i = 2; i < super.optimalLpcOrder; i++) {
             super.quantizedReflectionCoefficients[i] = (int) Math.floor(64 * super.reflectionCoefficients[i]);
         }
@@ -94,9 +98,9 @@ public final class ResidueGenerator extends LinearPredictionBase {
 
     private void generateResidues() {
         long correction = (long) 1 << (super.correctionFactor - 1);
-        
+
         residues[0] = samples[0];
-        
+
         for (int i = 1; i <= super.optimalLpcOrder; i++) {
             long temp = correction;
             for (int j = 1; j <= i; j++) {

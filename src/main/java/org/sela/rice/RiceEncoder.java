@@ -44,11 +44,11 @@ public final class RiceEncoder {
     }
 
     private void generateEncodedBits() {
-        bitOutput = new int[(int)(Math.ceil((float)requiredBits/32) * 32)];
+        bitOutput = new int[(int) (Math.ceil((float) requiredBits / 32) * 32)];
         int temp = 0, bits = 0;
-        
+
         for (int i = 0; i < unsignedInput.length; i++) {
-            temp = (int)(unsignedInput[i] >> optimumRiceParam);
+            temp = (int) (unsignedInput[i] >> optimumRiceParam);
             // Write out 'temp' number of ones
             for (int j = 0; j < temp; j++) {
                 bitOutput[bits++] = 0b1;
@@ -59,7 +59,7 @@ public final class RiceEncoder {
 
             // Write out last param bits of input
             for (int j = (optimumRiceParam - 1); j >= 0; j--) {
-                bitOutput[bits++] = (int)((unsignedInput[i] >> j) & 0b1);
+                bitOutput[bits++] = (int) ((unsignedInput[i] >> j) & 0b1);
             }
         }
     }
@@ -67,8 +67,9 @@ public final class RiceEncoder {
     private void writeInts() {
         output = new int[((int) Math.ceil(((float) requiredBits) / 32))];
         for (int i = 0; i < output.length; i++) {
-            for(int j = 0; j < 32; j++) {
-                output[i] |= ((long)bitOutput[i * 32 + j]) << j;;
+            for (int j = 0; j < 32; j++) {
+                output[i] |= ((long) bitOutput[i * 32 + j]) << j;
+                ;
             }
         }
     }

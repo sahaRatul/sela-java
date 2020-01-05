@@ -5,7 +5,7 @@ import org.sela.data.*;
 public final class SampleGenerator extends LinearPredictionBase {
     private int[] residues;
     private int[] samples;
-    
+
     public SampleGenerator(LpcEncodedData encodedData) {
         super(encodedData.quantizedReflectionCoefficients, encodedData.optimalLpcOrder);
         this.residues = encodedData.residues;
@@ -14,9 +14,9 @@ public final class SampleGenerator extends LinearPredictionBase {
 
     private void generateSamples() {
         long correction = (long) 1 << (super.correctionFactor - 1);
-        
+
         samples[0] = residues[0];
-        
+
         for (int i = 1; i <= super.optimalLpcOrder; i++) {
             long temp = correction;
             for (int j = 1; j <= i; j++) {
@@ -31,7 +31,7 @@ public final class SampleGenerator extends LinearPredictionBase {
                 temp -= (super.linearPredictionCoefficients[j] * samples[i - j]);
             samples[i] = residues[i] - (int) (temp >> super.correctionFactor);
         }
-    } 
+    }
 
     public LpcDecodedData process() {
         super.dequantizeReflectionCoefficients();

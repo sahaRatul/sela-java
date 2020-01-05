@@ -11,17 +11,17 @@ public class LpcTest {
     public void testResidueSampleGenerator() {
         // Generate a sine wave
         int[] samples = new int[2048];
-        for(int i = 0; i < samples.length; i++) {
-            samples[i] = (int)(32767 * Math.sin(Math.toRadians(i)));
+        for (int i = 0; i < samples.length; i++) {
+            samples[i] = (int) (32767 * Math.sin(Math.toRadians(i)));
         }
 
         LpcDecodedData input = new LpcDecodedData(samples);
 
-        //Generate residues
+        // Generate residues
         ResidueGenerator resGen = new ResidueGenerator(input);
         LpcEncodedData encoded = resGen.process();
 
-        //Generate samples
+        // Generate samples
         SampleGenerator sampleGen = new SampleGenerator(encoded);
         LpcDecodedData decoded = sampleGen.process();
 

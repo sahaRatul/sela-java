@@ -15,15 +15,16 @@ public final class FrameEncoder {
 
     public Frame process() {
         ArrayList<SubFrame> subFrames = new ArrayList<>(samples.length);
-        
+
         // For each channel
-        for(byte i = 0; i < samples.length; i++) {
+        for (byte i = 0; i < samples.length; i++) {
             // Stage 1 - Generate residues and reflection coefficients
             ResidueGenerator residueGenerator = new ResidueGenerator(new LpcDecodedData(samples[i]));
             LpcEncodedData residues = residueGenerator.process();
 
             // Stage 2 - Compress residues and reflection coefficients
-            RiceEncoder reflectionRiceEncoder = new RiceEncoder(new RiceDecodedData(residues.quantizedReflectionCoefficients));
+            RiceEncoder reflectionRiceEncoder = new RiceEncoder(
+                    new RiceDecodedData(residues.quantizedReflectionCoefficients));
             RiceEncoder residueRiceEncoder = new RiceEncoder(new RiceDecodedData(residues.residues));
             RiceEncodedData reflectionData = reflectionRiceEncoder.process();
             RiceEncodedData residueData = residueRiceEncoder.process();
