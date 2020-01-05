@@ -8,9 +8,16 @@ import org.sela.rice.*;
 
 public final class FrameEncoder {
     private int[][] samples;
+    private int index;
 
     public FrameEncoder(int[][] samples) {
         this.samples = samples;
+        this.index = 0;
+    }
+
+    public FrameEncoder(int[][] samples, int index) {
+        this.samples = samples;
+        this.index = index; //Useful when parallel processing
     }
 
     public Frame process() {
@@ -34,6 +41,6 @@ public final class FrameEncoder {
             subFrames.add(subFrame);
         }
 
-        return new Frame(subFrames);
+        return new Frame(subFrames, index);
     }
 }
