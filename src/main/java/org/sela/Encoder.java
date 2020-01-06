@@ -21,7 +21,7 @@ public class Encoder {
     private int frameCount;
     private final int samplePerSubFrame = 2048;
 
-    public Encoder(File inputFile, File outputFile) throws WavFileException, IOException {
+    public Encoder(File inputFile, File outputFile) throws FileException, IOException {
         wavFile = new WavFile(inputFile);
         this.outputFile = outputFile;
     }

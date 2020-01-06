@@ -10,12 +10,12 @@ class Chunk {
     public String format;
     public ArrayList<SubChunk> subChunks;
 
-    public void validate() throws WavFileException {
+    public void validate() throws FileException {
         if(!chunkId.equals("RIFF")) {
-            throw new WavFileException("Invalid ChunkId");
+            throw new FileException("Invalid ChunkId");
         }
         else if(!format.equals("WAVE")) {
-            throw new WavFileException("Invalid format");
+            throw new FileException("Invalid format");
         }
     }
 }

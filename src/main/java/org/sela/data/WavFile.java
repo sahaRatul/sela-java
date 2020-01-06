@@ -18,7 +18,7 @@ public class WavFile {
     private int readOffset;
     private int[][] demuxedSamples;
 
-    public WavFile(File inputFile) throws IOException, WavFileException {
+    public WavFile(File inputFile) throws IOException, FileException {
         this.inputFile = inputFile;
         this.readOffset = 0;
         this.read();
@@ -36,7 +36,7 @@ public class WavFile {
         inputStream.close();
     }
 
-    private void readChunk() throws WavFileException {
+    private void readChunk() throws FileException {
         chunk = new Chunk();
         byte[] chunkId = new byte[4];
         byte[] format = new byte[4];
@@ -54,7 +54,7 @@ public class WavFile {
         chunk.validate();
     }
 
-    private void readSubChunks() throws WavFileException {
+    private void readSubChunks() throws FileException {
         while (buffer.hasRemaining()) {
             SubChunk subChunk = new SubChunk();
             byte[] subChunkId = new byte[4];
@@ -71,10 +71,10 @@ public class WavFile {
         }
     }
 
-    private void generateFormatSubChunk() throws WavFileException {
+    private void generateFormatSubChunk() throws FileException {
         SubChunk subChunk = chunk.subChunks.stream().filter(x -> x.subChunkId.equals("fmt ")).findFirst().get();
         if (subChunk == null) {
-            throw new WavFileException("fmt subchunk not found in wav");
+            throw new FileException("fmt subchunk not found in wav");
         }
         int subChunkIndex = chunk.subChunks.indexOf(subChunk);
 
@@ -97,11 +97,11 @@ public class WavFile {
         chunk.subChunks.set(subChunkIndex, formatSubChunk);
     }
 
-    private void generateDataChunk() throws WavFileException {
+    private void generateDataChunk() throws FileException {
         // Get Data subChunk
         SubChunk subChunk = chunk.subChunks.stream().filter(x -> x.subChunkId.equals("data")).findFirst().get();
         if (subChunk == null) {
-            throw new WavFileException("data subchunk not found in wav");
+            throw new FileException("data subchunk not found in wav");
         }
         int subChunkIndex = chunk.subChunks.indexOf(subChunk);
 
@@ -144,7 +144,7 @@ public class WavFile {
         this.demuxedSamples = demuxedSamples;
     }
 
-    private void read() throws IOException, WavFileException {
+    private void read() throws IOException, FileException {
         allocateBuffer();
         readChunk();
         readSubChunks();

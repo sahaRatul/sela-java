@@ -13,6 +13,10 @@ public final class Frame implements Comparable<Frame> {
         this.index = index;
     }
 
+    public Frame(int index) {
+        this.index = index;
+    }
+
     public int getIndex() {
         return index;
     }
