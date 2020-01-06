@@ -96,7 +96,7 @@ public final class SelaFile {
                     encodedResidues[i] = buffer.getInt();
                 }
 
-                //Generate objects
+                //Generate subframes
                 RiceEncodedData reflectionData = new RiceEncodedData(reflectionCoefficientRiceParam, optimumLpcOrder, encodedReflectionCoefficients);
                 RiceEncodedData residueData = new RiceEncodedData(residueRiceParam, samplesPerChannel, encodedResidues);
                 SubFrame subFrame = new SubFrame(subFrameChannel, reflectionData, residueData);
@@ -107,7 +107,7 @@ public final class SelaFile {
 
     public void readFromStream() throws IOException, FileException {
         if (inputStream == null) {
-            throw new FileException("inputStream is undefined");
+            throw new FileException("inputStream is null");
         }
 
         byte[] inputBytes = new byte[inputStream.available()];
@@ -117,11 +117,12 @@ public final class SelaFile {
         buffer.order(ByteOrder.LITTLE_ENDIAN);
 
         read(buffer);
+        inputStream.close();
     }
 
     public void writeToStream() throws IOException, FileException {
         if (outputStream == null) {
-            throw new FileException("outputStream is undefined");
+            throw new FileException("outputStream is null");
         }
         int byteCount = 15;
         for (Frame frame : frames) {
