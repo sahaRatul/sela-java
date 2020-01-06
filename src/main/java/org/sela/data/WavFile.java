@@ -22,7 +22,6 @@ public class WavFile {
         this.inputFile = inputFile;
         this.readOffset = 0;
         this.read();
-        this.demuxSamples();
     }
 
     private void allocateBuffer() throws IOException {
@@ -101,27 +100,31 @@ public class WavFile {
         chunk.subChunks.add(dataSubChunk);
     }
 
-    private void read() throws IOException, WavFileException {
-        allocateBuffer();
-        readChunk();
-        readFormatSubChunk();
-        readDataChunk();
-    }
-
     private void demuxSamples() {
         FormatSubChunk formatSubChunk = (FormatSubChunk) chunk.subChunks.get(0);
         DataSubChunk dataSubChunk = (DataSubChunk) chunk.subChunks.get(1);
+        
         int[][] demuxedSamples = new int[formatSubChunk.numChannels][dataSubChunk.samples.length / formatSubChunk.numChannels];
         for(int i = 0; i < demuxedSamples.length; i++) {
             for (int j = 0; j < demuxedSamples[i].length; j++) {
                 demuxedSamples[i][j] = dataSubChunk.samples[demuxedSamples.length * j + i];
             }
         }
+        
         this.demuxedSamples = demuxedSamples;
     }
 
-    public int getNumChannels() {
-        return demuxedSamples.length;
+    private void read() throws IOException, WavFileException {
+        allocateBuffer();
+        readChunk();
+        readFormatSubChunk();
+        readDataChunk();
+        demuxSamples();
+    }
+
+    public short getNumChannels() {
+        FormatSubChunk formatSubChunk = (FormatSubChunk) chunk.subChunks.get(0);
+        return formatSubChunk.numChannels;
     }
 
     public int getSampleRate() {

@@ -25,7 +25,7 @@ public class Encoder {
         this.outputFile = outputFile;
     }
 
-    private void readSamples() throws IOException, WavFileException {
+    private void readSamples() {
         long sampleCount = wavFile.getSampleCount();
         int selaFrameCount = (int) Math.ceil((double) sampleCount / (samplePerSubFrame));
 
@@ -35,7 +35,7 @@ public class Encoder {
         }
     }
 
-    public SelaFile process() throws IOException, WavFileException {
+    public SelaFile process() throws IOException {
         readSamples();
         List<int[][]> listSamples = Arrays.asList(samples);
         List<Frame> frames = listSamples.parallelStream()
