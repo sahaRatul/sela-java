@@ -1,6 +1,6 @@
 package org.sela.data;
 
-import org.sela.wav.WavFileException;
+import org.sela.exception.*;
 
 public class FormatSubChunk extends SubChunk {
     public short audioFormat;

@@ -2,7 +2,7 @@ package org.sela.data;
 
 import java.util.ArrayList;
 
-import org.sela.wav.WavFileException;
+import org.sela.exception.*;
 
 class Chunk {
     public String chunkId;

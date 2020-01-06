@@ -1,6 +1,6 @@
 package org.sela.data;
 
-import org.sela.wav.WavFileException;
+import org.sela.exception.*;
 
 public abstract class SubChunk {
     protected String subChunkId;

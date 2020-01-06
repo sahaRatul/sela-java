@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
-import org.sela.wav.WavFileException;
+import org.sela.exception.*;
 
 public class WavFile {
     public Chunk chunk;
@@ -94,9 +94,7 @@ public class WavFile {
         for(int i = 0; i < sampleCount; i++) {
             dataSubChunk.samples[i] = buffer.getShort();
         }
-
         dataSubChunk.validate();
-
         chunk.subChunks.add(dataSubChunk);
     }
 

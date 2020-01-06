@@ -12,7 +12,7 @@ import org.sela.data.Frame;
 import org.sela.data.SelaFile;
 import org.sela.data.WavFile;
 import org.sela.frame.FrameEncoder;
-import org.sela.wav.WavFileException;
+import org.sela.exception.*;
 
 public class Encoder {
     WavFile wavFile;

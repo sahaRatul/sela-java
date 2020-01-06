@@ -1,4 +1,4 @@
-package org.sela.wav;
+package org.sela.exception;
 
 public class WavFileException extends Exception {
 	private static final long serialVersionUID = 1L;
