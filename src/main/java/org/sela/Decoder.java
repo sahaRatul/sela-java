@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.sela.data.Frame;
+import org.sela.data.WavFile;
 import org.sela.frame.FrameDecoder;
-import org.sela.wav.WavFile;
 
 public class Decoder {
     WavFile wavFile;

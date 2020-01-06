@@ -13,8 +13,8 @@ public final class App {
                 inputFile = new File(args[0]);
                 outputFile = new File(args[1]);
             } else {
-                inputFile = new File("/home/ratul/Downloads/HANA - HANADRIEL/Satellite.wav");
-                outputFile = new File("/home/ratul/encoded.sela");
+                inputFile = new File("/Users/ratul.s/Source/sela/sat2.wav");
+                outputFile = new File("/Users/ratul.s/encoded.sela");
             }
             Encoder selaEncoder = new Encoder(inputFile, outputFile);
             SelaFile selaFile = selaEncoder.process();

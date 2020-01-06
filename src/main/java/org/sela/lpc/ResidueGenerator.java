@@ -111,8 +111,9 @@ public final class ResidueGenerator extends LinearPredictionBase {
 
         for (int i = super.optimalLpcOrder + 1; i < samples.length; i++) {
             long temp = correction;
-            for (int j = 0; j <= super.optimalLpcOrder; j++)
+            for (int j = 0; j <= super.optimalLpcOrder; j++) {
                 temp += (super.linearPredictionCoefficients[j] * samples[i - j]);
+            }
             residues[i] = samples[i] - (int) (temp >> super.correctionFactor);
         }
     }

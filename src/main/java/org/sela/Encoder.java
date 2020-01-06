@@ -10,26 +10,23 @@ import java.util.stream.Collectors;
 
 import org.sela.data.Frame;
 import org.sela.data.SelaFile;
-import org.sela.data.WavFile2;
+import org.sela.data.WavFile;
 import org.sela.frame.FrameEncoder;
-import org.sela.wav.WavFile;
 import org.sela.wav.WavFileException;
 
 public class Encoder {
     WavFile wavFile;
-    WavFile2 wavFile2;
     File outputFile;
     int[][][] samples;
     private final int samplePerSubFrame = 2048;
 
     public Encoder(File inputFile, File outputFile) throws WavFileException, IOException {
-        wavFile = WavFile.openWavFile(inputFile);
-        wavFile2 = new WavFile2(inputFile);
+        wavFile = new WavFile(inputFile);
         this.outputFile = outputFile;
     }
 
     private void readSamples() throws IOException, WavFileException {
-        long sampleCount = wavFile.getNumFrames();
+        long sampleCount = wavFile.getSampleCount();
         int selaFrameCount = (int) Math.ceil((double) sampleCount / (samplePerSubFrame));
 
         samples = new int[selaFrameCount][wavFile.getNumChannels()][samplePerSubFrame];
@@ -40,12 +37,11 @@ public class Encoder {
 
     public SelaFile process() throws IOException, WavFileException {
         readSamples();
-        wavFile2.read();
         List<int[][]> listSamples = Arrays.asList(samples);
         List<Frame> frames = listSamples.parallelStream()
                 .map(x -> (new FrameEncoder(x, listSamples.indexOf(x))).process()).collect(Collectors.toList());
         Collections.sort(frames);
-        return new SelaFile((int) wavFile.getSampleRate(), (short) wavFile.getValidBits(),
-                (byte) wavFile.getNumChannels(), frames, new FileOutputStream(outputFile));
+        return new SelaFile(wavFile.getSampleRate(), wavFile.getBitsPerSample(), (byte) wavFile.getNumChannels(),
+                frames, new FileOutputStream(outputFile));
     }
 }

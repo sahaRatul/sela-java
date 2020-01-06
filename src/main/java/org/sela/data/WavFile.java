@@ -11,13 +11,18 @@ import java.util.ArrayList;
 
 import org.sela.wav.WavFileException;
 
-public class WavFile2 {
-    private Chunk chunk;
+public class WavFile {
+    public Chunk chunk;
     private File inputFile;
     private ByteBuffer buffer;
+    private int readOffset;
+    private int[][] demuxedSamples;
 
-    public WavFile2(File inputFile) {
+    public WavFile(File inputFile) throws IOException, WavFileException {
         this.inputFile = inputFile;
+        this.readOffset = 0;
+        this.read();
+        this.demuxSamples();
     }
 
     private void allocateBuffer() throws IOException {
@@ -96,10 +101,50 @@ public class WavFile2 {
         chunk.subChunks.add(dataSubChunk);
     }
 
-    public void read() throws IOException, WavFileException {
+    private void read() throws IOException, WavFileException {
         allocateBuffer();
         readChunk();
         readFormatSubChunk();
         readDataChunk();
+    }
+
+    private void demuxSamples() {
+        FormatSubChunk formatSubChunk = (FormatSubChunk) chunk.subChunks.get(0);
+        DataSubChunk dataSubChunk = (DataSubChunk) chunk.subChunks.get(1);
+        int[][] demuxedSamples = new int[formatSubChunk.numChannels][dataSubChunk.samples.length / formatSubChunk.numChannels];
+        for(int i = 0; i < demuxedSamples.length; i++) {
+            for (int j = 0; j < demuxedSamples[i].length; j++) {
+                demuxedSamples[i][j] = dataSubChunk.samples[demuxedSamples.length * j + i];
+            }
+        }
+        this.demuxedSamples = demuxedSamples;
+    }
+
+    public int getNumChannels() {
+        return demuxedSamples.length;
+    }
+
+    public int getSampleRate() {
+        FormatSubChunk formatSubChunk = (FormatSubChunk) chunk.subChunks.get(0);
+        return formatSubChunk.sampleRate; 
+    }
+
+    public short getBitsPerSample() {
+        FormatSubChunk formatSubChunk = (FormatSubChunk) chunk.subChunks.get(0);
+        return formatSubChunk.bitsPerSample;
+    }
+
+    public int getSampleCount() {
+        return demuxedSamples.length * demuxedSamples[0].length; 
+    }
+
+    public void readFrames(int[][] output, int samplesPerChannel) {
+        int readLimit = (demuxedSamples[0].length - readOffset) > samplesPerChannel ? samplesPerChannel : (demuxedSamples[0].length - readOffset);
+        for(int i = 0; i < demuxedSamples.length; i++) {
+            for(int j = 0; j < readLimit; j++) {
+                output[i][j] = demuxedSamples[i][readOffset + j];
+            }
+        }
+        readOffset += samplesPerChannel;
     }
 }
