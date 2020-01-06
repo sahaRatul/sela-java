@@ -10,18 +10,21 @@ import java.util.stream.Collectors;
 
 import org.sela.data.Frame;
 import org.sela.data.SelaFile;
+import org.sela.data.WavFile2;
 import org.sela.frame.FrameEncoder;
 import org.sela.wav.WavFile;
 import org.sela.wav.WavFileException;
 
 public class Encoder {
     WavFile wavFile;
+    WavFile2 wavFile2;
     File outputFile;
     int[][][] samples;
     private final int samplePerSubFrame = 2048;
 
     public Encoder(File inputFile, File outputFile) throws WavFileException, IOException {
         wavFile = WavFile.openWavFile(inputFile);
+        wavFile2 = new WavFile2(inputFile);
         this.outputFile = outputFile;
     }
 
@@ -37,6 +40,7 @@ public class Encoder {
 
     public SelaFile process() throws IOException, WavFileException {
         readSamples();
+        wavFile2.read();
         List<int[][]> listSamples = Arrays.asList(samples);
         List<Frame> frames = listSamples.parallelStream()
                 .map(x -> (new FrameEncoder(x, listSamples.indexOf(x))).process()).collect(Collectors.toList());
