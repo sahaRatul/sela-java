@@ -15,9 +15,10 @@ import org.sela.frame.FrameEncoder;
 import org.sela.exception.*;
 
 public class Encoder {
-    WavFile wavFile;
-    File outputFile;
-    int[][][] samples;
+    private WavFile wavFile;
+    private File outputFile;
+    private int[][][] samples;
+    private int frameCount;
     private final int samplePerSubFrame = 2048;
 
     public Encoder(File inputFile, File outputFile) throws WavFileException, IOException {
@@ -27,11 +28,11 @@ public class Encoder {
 
     private void readSamples() {
         long sampleCount = wavFile.getSampleCount();
-        int selaFrameCount = (int) Math.ceil((double) sampleCount / (samplePerSubFrame));
+        frameCount = (int) Math.ceil((double) sampleCount / (samplePerSubFrame * wavFile.getNumChannels()));
 
-        samples = new int[selaFrameCount][wavFile.getNumChannels()][samplePerSubFrame];
-        for (int i = 0; i < selaFrameCount; i++) {
-            wavFile.readFrames(samples[i], 2048);
+        samples = new int[frameCount][wavFile.getNumChannels()][samplePerSubFrame];
+        for (int i = 0; i < frameCount; i++) {
+            wavFile.readFrames(samples[i], samplePerSubFrame);
         }
     }
 
