@@ -83,7 +83,7 @@ public final class SelaFile {
                 short reflectionCoefficientRequiredInts = buffer.getShort();
                 byte optimumLpcOrder = buffer.get();
                 int[] encodedReflectionCoefficients = new int[reflectionCoefficientRequiredInts];
-                
+
                 for (int k = 0; k < encodedReflectionCoefficients.length; k++) {
                     encodedReflectionCoefficients[k] = buffer.getInt();
                 }
@@ -104,6 +104,7 @@ public final class SelaFile {
                 SubFrame subFrame = new SubFrame(subFrameChannel, reflectionData, residueData);
                 frame.subFrames.add(subFrame);
             }
+            frames.add(frame);
         }
     }
 

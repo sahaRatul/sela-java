@@ -4,11 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.sela.data.SelaFile;
-import org.sela.data.WavFile;
+import org.sela.data.*;
 import org.sela.exception.FileException;
 import org.sela.frame.FrameDecoder;
 
@@ -28,10 +29,14 @@ public class Decoder {
 
     public List<int[][]> process() throws IOException, FileException {
         readFrames();
-
-        List<int[][]> samples = selaFile.getFrames().parallelStream().map(x -> new FrameDecoder(x).process())
+        
+        // Decode frames in parallel
+        List<WavFrame> wavFrames = selaFile.getFrames().parallelStream().map(x -> new FrameDecoder(x).process())
                 .collect(Collectors.toList());
-        System.out.println("Decoded");
-        return samples;
+        
+        // Sort decoded samples
+        Collections.sort(wavFrames);
+
+        return new ArrayList<>();
     }
 }

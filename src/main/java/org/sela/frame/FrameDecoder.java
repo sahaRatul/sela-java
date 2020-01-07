@@ -11,7 +11,7 @@ public final class FrameDecoder {
         this.frame = frame;
     }
 
-    public int[][] process() {
+    public WavFrame process() {
         int[][] samples = new int[frame.subFrames.size()][];
 
         // Foreach subFrame
@@ -34,6 +34,6 @@ public final class FrameDecoder {
             LpcDecodedData decoded = (new SampleGenerator(encodedData)).process();
             samples[channel] = decoded.samples;
         }
-        return samples;
+        return new WavFrame(frame.getIndex(), samples);
     }
 }

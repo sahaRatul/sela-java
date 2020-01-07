@@ -7,26 +7,19 @@ import org.sela.lpc.*;
 import org.sela.rice.*;
 
 public final class FrameEncoder {
-    private int[][] samples;
-    private int index;
+    private WavFrame wavFrame;
 
-    public FrameEncoder(int[][] samples) {
-        this.samples = samples;
-        this.index = 0;
-    }
-
-    public FrameEncoder(int[][] samples, int index) {
-        this.samples = samples;
-        this.index = index; //Useful when parallel processing
+    public FrameEncoder(WavFrame wavFrame) {
+        this.wavFrame = wavFrame;
     }
 
     public Frame process() {
-        ArrayList<SubFrame> subFrames = new ArrayList<>(samples.length);
+        ArrayList<SubFrame> subFrames = new ArrayList<>(wavFrame.samples.length);
 
         // Foreach channel
-        for (byte i = 0; i < samples.length; i++) {
+        for (byte i = 0; i < wavFrame.samples.length; i++) {
             // Stage 1 - Generate residues and reflection coefficients
-            ResidueGenerator residueGenerator = new ResidueGenerator(new LpcDecodedData(samples[i]));
+            ResidueGenerator residueGenerator = new ResidueGenerator(new LpcDecodedData(wavFrame.samples[i]));
             LpcEncodedData residues = residueGenerator.process();
 
             // Stage 2 - Compress residues and reflection coefficients
@@ -41,6 +34,6 @@ public final class FrameEncoder {
             subFrames.add(subFrame);
         }
 
-        return new Frame(subFrames, index);
+        return new Frame(subFrames, wavFrame.getIndex());
     }
 }

@@ -21,15 +21,16 @@ public class FrameTest {
             samples[1][i] = (int) (32767 * Math.cos(Math.toRadians(i)));
         }
 
-        FrameEncoder encoder = new FrameEncoder(samples);
+        WavFrame input = new WavFrame(0, samples);
+        FrameEncoder encoder = new FrameEncoder(new WavFrame(0, samples));
         Frame frame = encoder.process();
 
         FrameDecoder decoder = new FrameDecoder(frame);
-        int[][] output = decoder.process();
+        WavFrame output = decoder.process();
 
-        assertEquals(samples.length, output.length);
+        assertEquals(input.samples.length, output.samples.length);
         for (int i = 0; i < samples.length; i++) {
-            assertArrayEquals(samples[i], output[i]);
+            assertArrayEquals(input.samples[i], output.samples[i]);
         }
     }
 }
