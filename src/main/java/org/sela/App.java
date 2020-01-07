@@ -15,7 +15,7 @@ public final class App {
             try {
                 parseCommandLineArgs(args);
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println(e.getMessage() + ". Aborting...");
             }
         }
     }
