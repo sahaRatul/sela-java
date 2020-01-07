@@ -26,13 +26,12 @@ public class Player extends Decoder {
         StringBuilder string = new StringBuilder(140);
         int percent = (int) (current * 100 / total);
         string.append('\r')
-                .append(String.join("", Collections.nCopies(percent == 0 ? 2 : 2 - (int) (Math.log10(percent)), " ")))
-                .append(String.format("%d%% [", percent)).append(String.join("", Collections.nCopies(percent, "=")))
-                .append('>').append(String.join("", Collections.nCopies(100 - percent, " "))).append(
-                        ']')
-                .append(String.join("", Collections.nCopies(current == 0 ? (int) (Math.log10(total))
-                        : (int) (Math.log10(total)) - (int) (Math.log10(current)), " ")));
-
+                .append(String.format("%d%% [", percent))
+                .append(String.join("", Collections.nCopies(percent / 2, "=")))
+                .append("\u001B[1m>\u001B[0m")
+                .append(String.join("", Collections.nCopies(50 - (percent / 2), " ")))
+                .append(']')
+                .append(" (").append(current).append('/').append(total).append(')');
         System.out.print(string);
     }
 
@@ -44,16 +43,15 @@ public class Player extends Decoder {
         SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
 
         // Prepare audio output
-        line.open(af, 4096);
+        line.open(af, 2048 * super.selaFile.getChannels());
         line.start();
 
         // Output wave form repeatedly
         for (int i = 0; i < wavFrames.size(); i++) {
             byte[] bytes = wavFrames.get(i).getDemuxedShortSamplesInByteArray();
             line.write(bytes, 0, bytes.length);
-            Player.printProgress(i, wavFrames.size());
+            Player.printProgress((i + 1), wavFrames.size());
         }
-
         line.drain();
         line.stop();
         line.close();
