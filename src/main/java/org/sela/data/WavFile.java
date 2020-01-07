@@ -1,27 +1,44 @@
+//Note: This entire file needs to rewritten
+
 package org.sela.data;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.sela.exception.*;
 
 public class WavFile {
-    public Chunk chunk;
+    private Chunk chunk;
     private File inputFile;
     private ByteBuffer buffer;
     private int readOffset;
-    private int[][] demuxedSamples;
+    private int[][] demuxedSamples; // Used for reading
+    private List<WavFrame> frames; // Used for writing
+
+    private DataOutputStream outputStream;
 
     public WavFile(File inputFile) throws IOException, FileException {
         this.inputFile = inputFile;
         this.readOffset = 0;
         this.read();
+    }
+
+    public WavFile(int sampleRate, short bitsPerSample, byte channels, List<WavFrame> frames, FileOutputStream fos) {
+        this.outputStream = new DataOutputStream(new BufferedOutputStream(fos));
+        this.frames = frames;
+        createChunk();
+        createFormatSubChunk(sampleRate, channels, bitsPerSample);
+        createDataChunk();
     }
 
     private void allocateBuffer() throws IOException {
@@ -52,6 +69,14 @@ public class WavFile {
         chunk.subChunks = new ArrayList<>(100);
 
         chunk.validate();
+    }
+
+    private void createChunk() {
+        chunk = new Chunk();
+        chunk.chunkId = "RIFF";
+        chunk.chunkSize = 36;
+        chunk.format = "WAVE";
+        chunk.subChunks = new ArrayList<>(2);
     }
 
     private void readSubChunks() throws FileException {
@@ -97,6 +122,22 @@ public class WavFile {
         chunk.subChunks.set(subChunkIndex, formatSubChunk);
     }
 
+    private void createFormatSubChunk(int sampleRate, byte channels, short bitsPerSample) {
+        SubChunk subChunk = new SubChunk();
+        subChunk.subChunkId = "fmt ";
+        subChunk.subChunkSize = 16;
+        ByteBuffer buffer = ByteBuffer.allocate(16);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        buffer.putShort((short) 1); // AudioFormat
+        buffer.putShort((short) channels); // Channels
+        buffer.putInt(sampleRate); // SampleRate
+        buffer.putInt((sampleRate * channels * bitsPerSample) / 8); // ByteRate
+        buffer.putShort((short) ((channels * bitsPerSample) / 8)); // BlockAlign
+        buffer.putShort(bitsPerSample); // BitsPerSample
+        subChunk.subChunkData = buffer.array();
+        chunk.subChunks.add(subChunk);
+    }
+
     private void generateDataChunk() throws FileException {
         // Get Data subChunk
         SubChunk subChunk = chunk.subChunks.stream().filter(x -> x.subChunkId.equals("data")).findFirst().get();
@@ -127,6 +168,17 @@ public class WavFile {
         chunk.subChunks.set(subChunkIndex, dataSubChunk);
     }
 
+    private void createDataChunk() {
+        SubChunk subChunk = new SubChunk();
+        subChunk.subChunkId = "data";
+        subChunk.subChunkSize = 0;
+        for (WavFrame frame : frames) {
+            subChunk.subChunkSize += frame.getSizeInBytes();
+        }
+        subChunk.subChunkData = new byte[0];
+        chunk.subChunks.add(subChunk);
+    }
+
     private void demuxSamples() {
         FormatSubChunk formatSubChunk = (FormatSubChunk) chunk.subChunks.stream()
                 .filter(x -> x.subChunkId.equals("fmt ")).findFirst().get();
@@ -141,17 +193,9 @@ public class WavFile {
             }
         }
 
+        this.frames = new ArrayList<>(1);
         this.demuxedSamples = demuxedSamples;
-    }
-
-    private void read() throws IOException, FileException {
-        allocateBuffer();
-        readChunk();
-        readSubChunks();
-        generateFormatSubChunk();
-        generateDataChunk();
-        demuxSamples();
-        chunk.subChunks.trimToSize();
+        this.frames.add(new WavFrame(0, demuxedSamples)); // Just for reference
     }
 
     public short getNumChannels() {
@@ -171,6 +215,45 @@ public class WavFile {
 
     public int getSampleCount() {
         return demuxedSamples.length * demuxedSamples[0].length;
+    }
+
+    public List<WavFrame> getFrames() {
+        return frames;
+    }
+
+    private void read() throws IOException, FileException {
+        allocateBuffer();
+        readChunk();
+        readSubChunks();
+        generateFormatSubChunk();
+        generateDataChunk();
+        demuxSamples();
+        chunk.subChunks.trimToSize();
+    }
+
+    public void writeToStream() throws FileException, IOException {
+        if (outputStream == null) {
+            throw new FileException("outputStream is null");
+        }
+        int byteCount = 44;
+        for (WavFrame frame : frames) {
+            byteCount += frame.getSizeInBytes();
+        }
+
+        ByteBuffer buffer = ByteBuffer.allocate(byteCount);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+
+        // Write chunk and subchunks
+        chunk.chunkSize += chunk.subChunks.get(1).subChunkSize;
+        chunk.write(buffer);
+
+        // Write samples
+        for (int i = 0; i < frames.size(); i++) {
+            buffer.put(frames.get(i).getDemuxedShortSamplesInByteArray());
+        }
+
+        outputStream.write(buffer.array());
+        outputStream.close();
     }
 
     public void readFrames(int[][] output, int samplesPerChannel) {

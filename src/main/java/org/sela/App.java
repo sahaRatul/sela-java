@@ -3,7 +3,10 @@ package org.sela;
 import java.io.File;
 import java.io.IOException;
 
+import javax.sound.sampled.LineUnavailableException;
+
 import org.sela.data.SelaFile;
+import org.sela.data.WavFile;
 import org.sela.exception.FileException;
 
 public final class App {
@@ -16,11 +19,12 @@ public final class App {
                 parseCommandLineArgs(args);
             } catch (Exception e) {
                 System.err.println(e.getMessage() + ". Aborting...");
+                e.printStackTrace();
             }
         }
     }
 
-    private static void parseCommandLineArgs(String[] args) throws IOException, FileException {
+    private static void parseCommandLineArgs(String[] args) throws IOException, FileException, LineUnavailableException {
         if (args[0].equals("-e") && args.length == 3) {
             File inputFile = new File(args[1]);
             File outputFile = new File(args[2]);
@@ -35,12 +39,13 @@ public final class App {
             File inputFile = new File(args[1]);
             System.out.println("Playing: " + args[1]);
             playFile(inputFile);
+            System.out.println("");
         } else {
             System.out.println("Invalid arguments..");
             printUsage();
             return;
         }
-        System.out.println("\nDone");
+        System.out.println("Done");
     }
 
     private static void encodeFile(File inputFile, File outputFile) throws IOException, FileException {
@@ -51,10 +56,11 @@ public final class App {
 
     private static void decodeFile(File inputFile, File outputFile) throws IOException, FileException {
         Decoder selaDecoder = new Decoder(inputFile, outputFile);
-        selaDecoder.process();
+        WavFile wavFile = selaDecoder.process();
+        wavFile.writeToStream();
     }
 
-    private static void playFile(File inputFile) throws IOException, FileException {
+    private static void playFile(File inputFile) throws IOException, FileException, LineUnavailableException {
         Player selaPlayer = new Player(inputFile);
         selaPlayer.play();
     }
