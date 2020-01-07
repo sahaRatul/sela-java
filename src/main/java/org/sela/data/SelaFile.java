@@ -54,7 +54,7 @@ public final class SelaFile {
         for (int i = 0; i < magicNumber.length; i++) {
             magicNumber[i] = buffer.get();
         }
-        if(!(new String(magicNumber).equals("SeLa"))) {
+        if (!(new String(magicNumber).equals("SeLa"))) {
             throw new FileException("Not a sela file");
         }
         sampleRate = buffer.getInt();
@@ -63,41 +63,43 @@ public final class SelaFile {
         numFrames = buffer.getInt();
         frames = new ArrayList<>(numFrames);
 
-        //Read frames
+        // Read frames
         for (int i = 0; i < numFrames; i++) {
-            //Read SyncWord
+            // Read SyncWord
             int sync = buffer.getInt();
-            if(sync != 0xAA55FF00) {
+            if (sync != 0xAA55FF00) {
                 break;
             }
             Frame frame = new Frame(i);
             frame.subFrames = new ArrayList<>(2);
 
-            //Read subframes
-            for(int j = 0; j < channels; j++) {
-                //Get channel
+            // Read subframes
+            for (int j = 0; j < channels; j++) {
+                // Get channel
                 byte subFrameChannel = buffer.get();
 
-                //Get Reflection data
+                // Get Reflection data
                 byte reflectionCoefficientRiceParam = buffer.get();
                 short reflectionCoefficientRequiredInts = buffer.getShort();
                 byte optimumLpcOrder = buffer.get();
                 int[] encodedReflectionCoefficients = new int[reflectionCoefficientRequiredInts];
-                for(int k = 0; k < encodedReflectionCoefficients.length; k++) {
-                    encodedReflectionCoefficients[i] = buffer.getInt();
+                
+                for (int k = 0; k < encodedReflectionCoefficients.length; k++) {
+                    encodedReflectionCoefficients[k] = buffer.getInt();
                 }
 
-                //Get Residue data
+                // Get Residue data
                 byte residueRiceParam = buffer.get();
                 short residueRequiredInts = buffer.getShort();
                 short samplesPerChannel = buffer.getShort();
                 int[] encodedResidues = new int[residueRequiredInts];
                 for (int k = 0; k < encodedResidues.length; k++) {
-                    encodedResidues[i] = buffer.getInt();
+                    encodedResidues[k] = buffer.getInt();
                 }
 
-                //Generate subframes
-                RiceEncodedData reflectionData = new RiceEncodedData(reflectionCoefficientRiceParam, optimumLpcOrder, encodedReflectionCoefficients);
+                // Generate subframes
+                RiceEncodedData reflectionData = new RiceEncodedData(reflectionCoefficientRiceParam, optimumLpcOrder,
+                        encodedReflectionCoefficients);
                 RiceEncodedData residueData = new RiceEncodedData(residueRiceParam, samplesPerChannel, encodedResidues);
                 SubFrame subFrame = new SubFrame(subFrameChannel, reflectionData, residueData);
                 frame.subFrames.add(subFrame);
@@ -136,5 +138,21 @@ public final class SelaFile {
 
         outputStream.write(buffer.array());
         outputStream.close();
+    }
+
+    public int getSampleRate() {
+        return sampleRate;
+    }
+
+    public short getBitsPerSample() {
+        return bitsPerSample;
+    }
+
+    public byte getChannels() {
+        return channels;
+    }
+
+    public List<Frame> getFrames() {
+        return frames;
     }
 }

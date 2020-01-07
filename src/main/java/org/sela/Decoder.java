@@ -1,23 +1,36 @@
 package org.sela;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.sela.data.Frame;
+import org.sela.data.SelaFile;
 import org.sela.data.WavFile;
+import org.sela.exception.FileException;
 import org.sela.frame.FrameDecoder;
 
 public class Decoder {
     WavFile wavFile;
+    SelaFile selaFile;
     File outputFile;
-    
-    public Decoder(File outputFile) {
+
+    public Decoder(File inputFile, File outputFile) throws FileNotFoundException {
+        this.selaFile = new SelaFile(new FileInputStream(inputFile));
         this.outputFile = outputFile;
     }
 
-    public List<int[][]> process(List<Frame> frames) {
-        List<int[][]> samples = frames.stream().map(x -> new FrameDecoder(x).process()).collect(Collectors.toList());
+    private void readFrames() throws IOException, FileException {
+        selaFile.readFromStream();
+    }
+
+    public List<int[][]> process() throws IOException, FileException {
+        readFrames();
+
+        List<int[][]> samples = selaFile.getFrames().parallelStream().map(x -> new FrameDecoder(x).process())
+                .collect(Collectors.toList());
         System.out.println("Decoded");
         return samples;
     }
