@@ -29,10 +29,10 @@ public class Encoder {
         frameCount = (int) Math.ceil((double) sampleCount / (samplePerSubFrame * wavFile.getNumChannels()));
         wavFrames = new ArrayList<>(frameCount);
 
-        int [][][] samples = new int[frameCount][wavFile.getNumChannels()][samplePerSubFrame];
         for (int i = 0; i < frameCount; i++) {
-            wavFile.readFrames(samples[i], samplePerSubFrame);
-            wavFrames.add(new WavFrame(i, samples[i]));
+            int[][] samples = new int[wavFile.getNumChannels()][samplePerSubFrame];
+            wavFile.readFrames(samples, samplePerSubFrame);
+            wavFrames.add(new WavFrame(i, samples));
         }
     }
 
