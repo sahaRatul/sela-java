@@ -27,7 +27,9 @@ public class Decoder {
         selaFile.readFromStream();
     }
 
-    protected List<WavFrame> processFrames() throws IOException, FileException {        
+    protected List<WavFrame> processFrames() throws IOException, FileException {
+        readFrames();
+        
         // Decode frames in parallel
         List<WavFrame> wavFrames = selaFile.getFrames().parallelStream().map(x -> new FrameDecoder(x).process())
                 .collect(Collectors.toList());
@@ -39,7 +41,6 @@ public class Decoder {
     }
 
     public WavFile process() throws IOException, FileException {
-        readFrames();
         List<WavFrame> wavFrames = processFrames();
 
         WavFile wavFile = new WavFile(selaFile.getSampleRate(), selaFile.getBitsPerSample(), selaFile.getChannels(), wavFrames, new FileOutputStream(outputFile));
