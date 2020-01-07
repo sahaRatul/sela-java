@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,9 +13,10 @@ import org.sela.exception.FileException;
 import org.sela.frame.FrameDecoder;
 
 public class Decoder {
-    WavFile wavFile;
-    SelaFile selaFile;
+    protected WavFile wavFile;
+    protected SelaFile selaFile;
     File outputFile;
+    protected List<WavFrame> wavFrames;
 
     public Decoder(File inputFile, File outputFile) throws FileNotFoundException {
         this.selaFile = new SelaFile(new FileInputStream(inputFile));
@@ -27,7 +27,7 @@ public class Decoder {
         selaFile.readFromStream();
     }
 
-    public List<int[][]> process() throws IOException, FileException {
+    public List<WavFrame> process() throws IOException, FileException {
         readFrames();
         
         // Decode frames in parallel
@@ -36,7 +36,8 @@ public class Decoder {
         
         // Sort decoded samples
         Collections.sort(wavFrames);
+        this.wavFrames = wavFrames;
 
-        return new ArrayList<>();
+        return wavFrames;
     }
 }
