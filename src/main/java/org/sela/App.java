@@ -28,16 +28,16 @@ public final class App {
         if (args[0].equals("-e") && args.length == 3) {
             File inputFile = new File(args[1]);
             File outputFile = new File(args[2]);
-            System.out.println("\u001B[1mEncoding: \u001B[0m" + args[1]);
+            System.out.println("\u001B[1mEncoding: \u001B[0m" + inputFile.getAbsolutePath());
             encodeFile(inputFile, outputFile);
         } else if (args[0].equals("-d") && args.length == 3) {
             File inputFile = new File(args[1]);
             File outputFile = new File(args[2]);
-            System.out.println("\u001B[1mDecoding: \u001B[0m" + args[1]);
+            System.out.println("\u001B[1mDecoding: \u001B[0m" + inputFile.getAbsolutePath());
             decodeFile(inputFile, outputFile);
         } else if (args[0].equals("-p") && args.length == 2) {
             File inputFile = new File(args[1]);
-            System.out.println("\u001B[1mPlaying: \u001B[0m" + args[1]);
+            System.out.println("\u001B[1mPlaying: \u001B[0m" + inputFile.getAbsolutePath());
             playFile(inputFile);
             System.out.println("");
         } else {
