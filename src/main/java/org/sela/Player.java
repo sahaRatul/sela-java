@@ -22,7 +22,7 @@ public class Player extends Decoder {
         int percent = (int) (current * 100 / total);
         string.append('\r')
                 .append(String.join("", Collections.nCopies(percent == 0 ? 2 : 2 - (int) (Math.log10(percent)), " ")))
-                .append(String.format(" %d%% [", percent)).append(String.join("", Collections.nCopies(percent, "=")))
+                .append(String.format("%d%% [", percent)).append(String.join("", Collections.nCopies(percent, "=")))
                 .append('>').append(String.join("", Collections.nCopies(100 - percent, " "))).append(']')
                 .append(String.join("",
                         Collections.nCopies(current == 0 ? (int) (Math.log10(total))

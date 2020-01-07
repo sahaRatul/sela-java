@@ -11,7 +11,6 @@ public final class App {
         System.out.println("SimplE Lossless Audio. Released under MIT license");
         if (args.length < 2) {
             printUsage();
-            System.out.println("Done");
         } else {
             try {
                 parseCommandLineArgs(args);
@@ -39,7 +38,9 @@ public final class App {
         } else {
             System.out.println("Invalid arguments..");
             printUsage();
+            return;
         }
+        System.out.println("\nDone");
     }
 
     private static void encodeFile(File inputFile, File outputFile) throws IOException, FileException {

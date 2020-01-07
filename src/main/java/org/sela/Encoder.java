@@ -39,7 +39,7 @@ public class Encoder {
     public SelaFile process() throws IOException {
         readSamples();
 
-        // Encode samples2 in parallel
+        // Encode samples in parallel
         List<Frame> frames = wavFrames.parallelStream()
                 .map(x -> (new FrameEncoder(x)).process()).collect(Collectors.toList());
 
