@@ -21,6 +21,7 @@ Java rewrite of the original [sela project](https://github.com/sahaRatul/sela).
 - Golomb-Rice lossless compression algorithm
   - [Wikipedia](https://en.wikipedia.org/wiki/Golomb_coding)
   - [Here is an implementation](http://michael.dipperstein.com/rice/index.html)
+- [MPEG4 ALS overview](http://elvera.nue.tu-berlin.de/files/1216Liebchen2009.pdf)
 - [FLAC overview](https://xiph.org/flac/documentation_format_overview.html)
 - [Paper on shorten, the original open source lossless codec](ftp://svr-ftp.eng.cam.ac.uk/pub/reports/robinson_tr156.ps.Z)
 - ISO/IEC 14496 Part 3, Subpart 11 (Audio Lossless Coding)
