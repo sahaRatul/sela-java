@@ -13,24 +13,24 @@ import org.sela.frame.FrameEncoder;
 import org.sela.exception.*;
 
 public class Encoder {
-    private WavFile wavFile;
-    private File outputFile;
+    private final WavFile wavFile;
+    private final File outputFile;
     private List<WavFrame> wavFrames;
     private int frameCount;
     private final int samplePerSubFrame = 2048;
 
-    public Encoder(File inputFile, File outputFile) throws FileException, IOException {
+    public Encoder(final File inputFile, final File outputFile) throws FileException, IOException {
         wavFile = new WavFile(inputFile);
         this.outputFile = outputFile;
     }
 
     private void readSamples() {
-        long sampleCount = wavFile.getSampleCount();
+        final long sampleCount = wavFile.getSampleCount();
         frameCount = (int) Math.ceil((double) sampleCount / (samplePerSubFrame * wavFile.getNumChannels()));
         wavFrames = new ArrayList<>(frameCount);
 
         for (int i = 0; i < frameCount; i++) {
-            int[][] samples = new int[wavFile.getNumChannels()][samplePerSubFrame];
+            final int[][] samples = new int[wavFile.getNumChannels()][samplePerSubFrame];
             wavFile.readFrames(samples, samplePerSubFrame);
             wavFrames.add(new WavFrame(i, samples));
         }
@@ -40,7 +40,7 @@ public class Encoder {
         readSamples();
 
         // Encode samples in parallel
-        List<Frame> frames = wavFrames.parallelStream()
+        final List<Frame> frames = wavFrames.parallelStream()
                 .map(x -> (new FrameEncoder(x)).process()).collect(Collectors.toList());
 
         // Sort encoded frames

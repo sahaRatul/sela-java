@@ -4,15 +4,15 @@ import org.sela.data.LpcDecodedData;
 import org.sela.data.LpcEncodedData;
 
 public final class ResidueGenerator extends LinearPredictionBase {
-    private int[] samples;
-    private int[] residues;
-    private double[] quantizedSamples;
-    private double[] autocorrelationFactors;
+    private final int[] samples;
+    private final int[] residues;
+    private final double[] quantizedSamples;
+    private final double[] autocorrelationFactors;
 
     private final int maxShort = 32767;
     private final double sqrt2 = 1.4142135623730950488016887242096;
 
-    public ResidueGenerator(LpcDecodedData data) {
+    public ResidueGenerator(final LpcDecodedData data) {
         this.samples = data.samples;
         this.quantizedSamples = new double[samples.length];
         this.autocorrelationFactors = new double[super.maxLpcOrder + 1];
@@ -51,7 +51,7 @@ public final class ResidueGenerator extends LinearPredictionBase {
 
     private void generateReflectionCoefficients() {
         double error;
-        double[][] gen = new double[2][super.maxLpcOrder];
+        final double[][] gen = new double[2][super.maxLpcOrder];
 
         for (int i = 0; i < super.maxLpcOrder; i++) {
             gen[0][i] = gen[1][i] = autocorrelationFactors[i + 1];
@@ -97,7 +97,7 @@ public final class ResidueGenerator extends LinearPredictionBase {
     }
 
     private void generateResidues() {
-        long correction = (long) 1 << (super.correctionFactor - 1);
+        final long correction = (long) 1 << (super.correctionFactor - 1);
 
         residues[0] = samples[0];
 

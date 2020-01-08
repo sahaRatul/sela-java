@@ -5,7 +5,7 @@ public final class RiceEncodedData {
     public int dataCount;
     public int[] encodedData;
 
-    public RiceEncodedData(int optimumRiceParam, int dataCount, int[] encodedData) {
+    public RiceEncodedData(final int optimumRiceParam, final int dataCount, final int[] encodedData) {
         this.optimumRiceParam = optimumRiceParam;
         this.dataCount = dataCount;
         this.encodedData = encodedData;

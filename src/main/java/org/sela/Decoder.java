@@ -16,9 +16,9 @@ import org.sela.frame.FrameDecoder;
 public class Decoder {
     protected WavFile wavFile;
     protected SelaFile selaFile;
-    private File outputFile;
+    private final File outputFile;
 
-    public Decoder(File inputFile, File outputFile) throws FileNotFoundException {
+    public Decoder(final File inputFile, final File outputFile) throws FileNotFoundException {
         this.selaFile = new SelaFile(new FileInputStream(inputFile));
         this.outputFile = outputFile;
     }
@@ -29,11 +29,11 @@ public class Decoder {
 
     protected List<WavFrame> processFrames() throws IOException, FileException {
         readFrames();
-        
+
         // Decode frames in parallel
-        List<WavFrame> wavFrames = selaFile.getFrames().parallelStream().map(x -> new FrameDecoder(x).process())
+        final List<WavFrame> wavFrames = selaFile.getFrames().parallelStream().map(x -> new FrameDecoder(x).process())
                 .collect(Collectors.toList());
-        
+
         // Sort decoded samples
         Collections.sort(wavFrames);
 
@@ -41,9 +41,10 @@ public class Decoder {
     }
 
     public WavFile process() throws IOException, FileException {
-        List<WavFrame> wavFrames = processFrames();
+        final List<WavFrame> wavFrames = processFrames();
 
-        WavFile wavFile = new WavFile(selaFile.getSampleRate(), selaFile.getBitsPerSample(), selaFile.getChannels(), wavFrames, new FileOutputStream(outputFile));
+        final WavFile wavFile = new WavFile(selaFile.getSampleRate(), selaFile.getBitsPerSample(),
+                selaFile.getChannels(), wavFrames, new FileOutputStream(outputFile));
         this.wavFile = wavFile;
         return wavFile;
     }

@@ -5,33 +5,33 @@ import org.sela.lpc.SampleGenerator;
 import org.sela.rice.RiceDecoder;
 
 public final class FrameDecoder {
-    private Frame frame;
+    private final Frame frame;
 
-    public FrameDecoder(Frame frame) {
+    public FrameDecoder(final Frame frame) {
         this.frame = frame;
     }
 
     public WavFrame process() {
-        int[][] samples = new int[frame.subFrames.size()][];
+        final int[][] samples = new int[frame.subFrames.size()][];
 
         // Foreach subFrame
-        for (SubFrame subFrame : frame.subFrames) {
+        for (final SubFrame subFrame : frame.subFrames) {
             // Stage 1 - Extract data from subFrame
-            byte channel = subFrame.channel;
-            byte optimumLpcOrder = subFrame.optimumLpcOrder;
-            RiceEncodedData reflectionData = new RiceEncodedData(subFrame.reflectionCoefficientRiceParam,
+            final byte channel = subFrame.channel;
+            final byte optimumLpcOrder = subFrame.optimumLpcOrder;
+            final RiceEncodedData reflectionData = new RiceEncodedData(subFrame.reflectionCoefficientRiceParam,
                     subFrame.optimumLpcOrder, subFrame.encodedReflectionCoefficients);
-            RiceEncodedData residueData = new RiceEncodedData(subFrame.residueRiceParam, subFrame.samplesPerChannel,
-                    subFrame.encodedResidues);
+            final RiceEncodedData residueData = new RiceEncodedData(subFrame.residueRiceParam,
+                    subFrame.samplesPerChannel, subFrame.encodedResidues);
 
             // Stage 2 - Decompress data
-            RiceDecodedData decodedReflectionData = (new RiceDecoder(reflectionData)).process();
-            RiceDecodedData decodedResidueData = (new RiceDecoder(residueData)).process();
+            final RiceDecodedData decodedReflectionData = (new RiceDecoder(reflectionData)).process();
+            final RiceDecodedData decodedResidueData = (new RiceDecoder(residueData)).process();
 
             // Stage 3 - Generate Samples
-            LpcEncodedData encodedData = new LpcEncodedData(optimumLpcOrder, decodedReflectionData.decodedData,
+            final LpcEncodedData encodedData = new LpcEncodedData(optimumLpcOrder, decodedReflectionData.decodedData,
                     decodedResidueData.decodedData);
-            LpcDecodedData decoded = (new SampleGenerator(encodedData)).process();
+            final LpcDecodedData decoded = (new SampleGenerator(encodedData)).process();
             samples[channel] = decoded.samples;
         }
         return new WavFrame(frame.getIndex(), samples);

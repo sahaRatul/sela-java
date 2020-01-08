@@ -10,33 +10,34 @@ import org.sela.data.WavFile;
 import org.sela.exception.FileException;
 
 public final class App {
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         System.out.println("\u001B[1mSimplE Lossless Audio. Released under MIT license\u001B[0m");
         if (args.length < 2) {
             printUsage();
         } else {
             try {
                 parseCommandLineArgs(args);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 System.err.println("\u001B[1m" + e.getMessage() + ". Aborting...\u001B[0m");
                 e.printStackTrace();
             }
         }
     }
 
-    private static void parseCommandLineArgs(String[] args) throws IOException, FileException, LineUnavailableException {
+    private static void parseCommandLineArgs(final String[] args)
+            throws IOException, FileException, LineUnavailableException {
         if (args[0].equals("-e") && args.length == 3) {
-            File inputFile = new File(args[1]);
-            File outputFile = new File(args[2]);
+            final File inputFile = new File(args[1]);
+            final File outputFile = new File(args[2]);
             System.out.println("\u001B[1mEncoding: \u001B[0m" + inputFile.getAbsolutePath());
             encodeFile(inputFile, outputFile);
         } else if (args[0].equals("-d") && args.length == 3) {
-            File inputFile = new File(args[1]);
-            File outputFile = new File(args[2]);
+            final File inputFile = new File(args[1]);
+            final File outputFile = new File(args[2]);
             System.out.println("\u001B[1mDecoding: \u001B[0m" + inputFile.getAbsolutePath());
             decodeFile(inputFile, outputFile);
         } else if (args[0].equals("-p") && args.length == 2) {
-            File inputFile = new File(args[1]);
+            final File inputFile = new File(args[1]);
             System.out.println("\u001B[1mPlaying: \u001B[0m" + inputFile.getAbsolutePath());
             playFile(inputFile);
             System.out.println("");
@@ -48,20 +49,20 @@ public final class App {
         System.out.println("\u001B[1mDone\u001B[0m");
     }
 
-    private static void encodeFile(File inputFile, File outputFile) throws IOException, FileException {
-        Encoder selaEncoder = new Encoder(inputFile, outputFile);
-        SelaFile selaFile = selaEncoder.process();
+    private static void encodeFile(final File inputFile, final File outputFile) throws IOException, FileException {
+        final Encoder selaEncoder = new Encoder(inputFile, outputFile);
+        final SelaFile selaFile = selaEncoder.process();
         selaFile.writeToStream();
     }
 
-    private static void decodeFile(File inputFile, File outputFile) throws IOException, FileException {
-        Decoder selaDecoder = new Decoder(inputFile, outputFile);
-        WavFile wavFile = selaDecoder.process();
+    private static void decodeFile(final File inputFile, final File outputFile) throws IOException, FileException {
+        final Decoder selaDecoder = new Decoder(inputFile, outputFile);
+        final WavFile wavFile = selaDecoder.process();
         wavFile.writeToStream();
     }
 
-    private static void playFile(File inputFile) throws IOException, FileException, LineUnavailableException {
-        Player selaPlayer = new Player(inputFile);
+    private static void playFile(final File inputFile) throws IOException, FileException, LineUnavailableException {
+        final Player selaPlayer = new Player(inputFile);
         selaPlayer.play();
     }
 

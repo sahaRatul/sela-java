@@ -15,7 +15,7 @@ public class LinearPredictionBase {
         optimalLpcOrder = 1;
     }
 
-    public LinearPredictionBase(int[] quantizedReflectionCoefficients, byte optimalLpcOrder) {
+    public LinearPredictionBase(final int[] quantizedReflectionCoefficients, final byte optimalLpcOrder) {
         this.reflectionCoefficients = new double[maxLpcOrder];
         this.quantizedReflectionCoefficients = quantizedReflectionCoefficients;
         this.optimalLpcOrder = optimalLpcOrder;
@@ -36,17 +36,17 @@ public class LinearPredictionBase {
 
     protected void generatelinearPredictionCoefficients() {
         linearPredictionCoefficients = new long[optimalLpcOrder + 1];
-        double[][] linearPredictionCoefficientMatrix = new double[optimalLpcOrder][optimalLpcOrder];
-        double[] lpcTmp = new double[optimalLpcOrder];
-        long correction = (long) 1 << correctionFactor;
+        final double[][] linearPredictionCoefficientMatrix = new double[optimalLpcOrder][optimalLpcOrder];
+        final double[] lpcTmp = new double[optimalLpcOrder];
+        final long correction = (long) 1 << correctionFactor;
 
         // Generate LPC matrix
         for (int i = 0; i < optimalLpcOrder; i++) {
             lpcTmp[i] = reflectionCoefficients[i];
-            int i2 = i >> 1;
+            final int i2 = i >> 1;
             int j = 0;
             for (j = 0; j < i2; j++) {
-                double tmp = lpcTmp[j];
+                final double tmp = lpcTmp[j];
                 lpcTmp[j] += reflectionCoefficients[i] * lpcTmp[i - 1 - j];
                 lpcTmp[i - 1 - j] += reflectionCoefficients[i] * tmp;
             }

@@ -3,17 +3,17 @@ package org.sela.lpc;
 import org.sela.data.*;
 
 public final class SampleGenerator extends LinearPredictionBase {
-    private int[] residues;
-    private int[] samples;
+    private final int[] residues;
+    private final int[] samples;
 
-    public SampleGenerator(LpcEncodedData encodedData) {
+    public SampleGenerator(final LpcEncodedData encodedData) {
         super(encodedData.quantizedReflectionCoefficients, encodedData.optimalLpcOrder);
         this.residues = encodedData.residues;
         this.samples = new int[residues.length];
     }
 
     private void generateSamples() {
-        long correction = (long) 1 << (super.correctionFactor - 1);
+        final long correction = (long) 1 << (super.correctionFactor - 1);
 
         samples[0] = residues[0];
 

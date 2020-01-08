@@ -18,7 +18,7 @@ public final class SubFrame {
     public short samplesPerChannel;
     public int[] encodedResidues;
 
-    public SubFrame(byte channel, RiceEncodedData reflectionData, RiceEncodedData residueData) {
+    public SubFrame(final byte channel, final RiceEncodedData reflectionData, final RiceEncodedData residueData) {
         this.channel = channel;
 
         this.reflectionCoefficientRiceParam = (byte) reflectionData.optimumRiceParam;
@@ -36,20 +36,20 @@ public final class SubFrame {
         return 10 + (4 * (encodedReflectionCoefficients.length + encodedResidues.length));
     }
 
-    public void write(ByteBuffer buffer) {
+    public void write(final ByteBuffer buffer) {
         buffer.put(channel);
-        
+
         buffer.put(reflectionCoefficientRiceParam);
         buffer.putShort(reflectionCoefficientRequiredInts);
         buffer.put(optimumLpcOrder);
-        for (int i : encodedReflectionCoefficients) {
+        for (final int i : encodedReflectionCoefficients) {
             buffer.putInt(i);
         }
 
         buffer.put(residueRiceParam);
         buffer.putShort(residueRequiredInts);
         buffer.putShort(samplesPerChannel);
-        for (int i : encodedResidues) {
+        for (final int i : encodedResidues) {
             buffer.putInt(i);
         }
     }

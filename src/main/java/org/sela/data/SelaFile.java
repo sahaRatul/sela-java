@@ -24,7 +24,8 @@ public final class SelaFile {
     DataOutputStream outputStream;
     DataInputStream inputStream;
 
-    public SelaFile(int sampleRate, short bitsPerSample, byte channels, List<Frame> frames, FileOutputStream fos) {
+    public SelaFile(final int sampleRate, final short bitsPerSample, final byte channels, final List<Frame> frames,
+            final FileOutputStream fos) {
         this.sampleRate = sampleRate;
         this.bitsPerSample = bitsPerSample;
         this.channels = channels;
@@ -33,24 +34,24 @@ public final class SelaFile {
         this.outputStream = new DataOutputStream(new BufferedOutputStream(fos));
     }
 
-    public SelaFile(FileInputStream fis) {
+    public SelaFile(final FileInputStream fis) {
         this.inputStream = new DataInputStream(new BufferedInputStream(fis));
     }
 
-    private void write(ByteBuffer buffer) {
+    private void write(final ByteBuffer buffer) {
         buffer.put(magicNumber);
         buffer.putInt(sampleRate);
         buffer.putShort(bitsPerSample);
         buffer.put(channels);
         buffer.putInt(numFrames);
 
-        for (Frame frame : frames) {
+        for (final Frame frame : frames) {
             frame.write(buffer);
         }
     }
 
-    private void read(ByteBuffer buffer) throws FileException {
-        byte[] magicNumber = new byte[4];
+    private void read(final ByteBuffer buffer) throws FileException {
+        final byte[] magicNumber = new byte[4];
         for (int i = 0; i < magicNumber.length; i++) {
             magicNumber[i] = buffer.get();
         }
@@ -66,42 +67,43 @@ public final class SelaFile {
         // Read frames
         for (int i = 0; i < numFrames; i++) {
             // Read SyncWord
-            int sync = buffer.getInt();
+            final int sync = buffer.getInt();
             if (sync != 0xAA55FF00) {
                 break;
             }
-            Frame frame = new Frame(i);
+            final Frame frame = new Frame(i);
             frame.subFrames = new ArrayList<>(2);
 
             // Read subframes
             for (int j = 0; j < channels; j++) {
                 // Get channel
-                byte subFrameChannel = buffer.get();
+                final byte subFrameChannel = buffer.get();
 
                 // Get Reflection data
-                byte reflectionCoefficientRiceParam = buffer.get();
-                short reflectionCoefficientRequiredInts = buffer.getShort();
-                byte optimumLpcOrder = buffer.get();
-                int[] encodedReflectionCoefficients = new int[reflectionCoefficientRequiredInts];
+                final byte reflectionCoefficientRiceParam = buffer.get();
+                final short reflectionCoefficientRequiredInts = buffer.getShort();
+                final byte optimumLpcOrder = buffer.get();
+                final int[] encodedReflectionCoefficients = new int[reflectionCoefficientRequiredInts];
 
                 for (int k = 0; k < encodedReflectionCoefficients.length; k++) {
                     encodedReflectionCoefficients[k] = buffer.getInt();
                 }
 
                 // Get Residue data
-                byte residueRiceParam = buffer.get();
-                short residueRequiredInts = buffer.getShort();
-                short samplesPerChannel = buffer.getShort();
-                int[] encodedResidues = new int[residueRequiredInts];
+                final byte residueRiceParam = buffer.get();
+                final short residueRequiredInts = buffer.getShort();
+                final short samplesPerChannel = buffer.getShort();
+                final int[] encodedResidues = new int[residueRequiredInts];
                 for (int k = 0; k < encodedResidues.length; k++) {
                     encodedResidues[k] = buffer.getInt();
                 }
 
                 // Generate subframes
-                RiceEncodedData reflectionData = new RiceEncodedData(reflectionCoefficientRiceParam, optimumLpcOrder,
-                        encodedReflectionCoefficients);
-                RiceEncodedData residueData = new RiceEncodedData(residueRiceParam, samplesPerChannel, encodedResidues);
-                SubFrame subFrame = new SubFrame(subFrameChannel, reflectionData, residueData);
+                final RiceEncodedData reflectionData = new RiceEncodedData(reflectionCoefficientRiceParam,
+                        optimumLpcOrder, encodedReflectionCoefficients);
+                final RiceEncodedData residueData = new RiceEncodedData(residueRiceParam, samplesPerChannel,
+                        encodedResidues);
+                final SubFrame subFrame = new SubFrame(subFrameChannel, reflectionData, residueData);
                 frame.subFrames.add(subFrame);
             }
             frames.add(frame);
@@ -113,10 +115,10 @@ public final class SelaFile {
             throw new FileException("inputStream is null");
         }
 
-        byte[] inputBytes = new byte[inputStream.available()];
+        final byte[] inputBytes = new byte[inputStream.available()];
         inputStream.read(inputBytes);
 
-        ByteBuffer buffer = ByteBuffer.wrap(inputBytes);
+        final ByteBuffer buffer = ByteBuffer.wrap(inputBytes);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
 
         read(buffer);
@@ -128,11 +130,11 @@ public final class SelaFile {
             throw new FileException("outputStream is null");
         }
         int byteCount = 15;
-        for (Frame frame : frames) {
+        for (final Frame frame : frames) {
             byteCount += frame.getByteCount();
         }
 
-        ByteBuffer buffer = ByteBuffer.allocate(byteCount);
+        final ByteBuffer buffer = ByteBuffer.allocate(byteCount);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
 
         write(buffer);

@@ -3,14 +3,14 @@ package org.sela.rice;
 import org.sela.data.*;
 
 public final class RiceDecoder {
-    private int[] input;
+    private final int[] input;
     private int[] bitInput;
-    private int dataCount;
-    private int optimumRiceParam;
-    private long[] unsignedOutput;
-    private int[] output;
+    private final int dataCount;
+    private final int optimumRiceParam;
+    private final long[] unsignedOutput;
+    private final int[] output;
 
-    public RiceDecoder(RiceEncodedData encodedData) {
+    public RiceDecoder(final RiceEncodedData encodedData) {
         this.input = encodedData.encodedData;
         this.dataCount = encodedData.dataCount;
         this.optimumRiceParam = encodedData.optimumRiceParam;

@@ -6,16 +6,16 @@ import java.util.Collections;
 import org.sela.data.*;
 
 public final class RiceEncoder {
-    private int[] input;
-    private long[] unsignedInput;
+    private final int[] input;
+    private final long[] unsignedInput;
     private int[] output;
     private int[] bitOutput;
-    private ArrayList<Integer> bitSizes;
+    private final ArrayList<Integer> bitSizes;
     private int optimumRiceParam;
     private int requiredBits;
     private final int maxRiceParam = 20;
 
-    public RiceEncoder(RiceDecodedData data) {
+    public RiceEncoder(final RiceDecodedData data) {
         this.input = data.decodedData;
         this.unsignedInput = new long[input.length];
         this.bitSizes = new ArrayList<Integer>(maxRiceParam);

@@ -7,10 +7,10 @@ public class SubChunk {
     protected int subChunkSize;
     protected byte[] subChunkData;
 
-    public void write(ByteBuffer buffer) {
-        char[] chars = new char[4];
+    public void write(final ByteBuffer buffer) {
+        final char[] chars = new char[4];
         subChunkId.getChars(0, 4, chars, 0);
-        for (char c : chars) {
+        for (final char c : chars) {
             buffer.put((byte)c);
         }
         buffer.putInt(subChunkSize);

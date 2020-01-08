@@ -15,32 +15,29 @@ import org.sela.data.WavFrame;
 import org.sela.exception.FileException;
 
 public class Player extends Decoder {
-    List<WavFrame> wavFrames;
+    private List<WavFrame> wavFrames;
 
-    public Player(File inputFile) throws IOException, FileException {
+    public Player(final File inputFile) throws IOException, FileException {
         super(inputFile, null);
         wavFrames = super.processFrames();
     }
 
-    private static void printProgress(long current, long total) {
-        StringBuilder string = new StringBuilder(140);
-        int percent = (int) (current * 100 / total);
-        string.append('\r')
-                .append(String.format("%d%% [", percent))
-                .append(String.join("", Collections.nCopies(percent / 2, "=")))
-                .append("\u001B[1m>\u001B[0m")
-                .append(String.join("", Collections.nCopies(50 - (percent / 2), " ")))
-                .append(']')
-                .append(" (").append(current).append('/').append(total).append(')');
+    private static void printProgress(final long current, final long total) {
+        final StringBuilder string = new StringBuilder(140);
+        final int percent = (int) (current * 100 / total);
+        string.append('\r').append(String.format("%d%% [", percent))
+                .append(String.join("", Collections.nCopies(percent / 2, "="))).append("\u001B[1m>\u001B[0m")
+                .append(String.join("", Collections.nCopies(50 - (percent / 2), " "))).append(']').append(" (")
+                .append(current).append('/').append(total).append(')');
         System.out.print(string);
     }
 
     public void play() throws LineUnavailableException {
         // Select audio format parameters
-        AudioFormat af = new AudioFormat(super.selaFile.getSampleRate(), super.selaFile.getBitsPerSample(),
+        final AudioFormat af = new AudioFormat(super.selaFile.getSampleRate(), super.selaFile.getBitsPerSample(),
                 super.selaFile.getChannels(), true, false);
-        DataLine.Info info = new DataLine.Info(SourceDataLine.class, af);
-        SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
+        final DataLine.Info info = new DataLine.Info(SourceDataLine.class, af);
+        final SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
 
         // Prepare audio output
         line.open(af, 2048 * super.selaFile.getChannels());
@@ -48,7 +45,7 @@ public class Player extends Decoder {
 
         // Output wave form repeatedly
         for (int i = 0; i < wavFrames.size(); i++) {
-            byte[] bytes = wavFrames.get(i).getDemuxedShortSamplesInByteArray();
+            final byte[] bytes = wavFrames.get(i).getDemuxedShortSamplesInByteArray();
             line.write(bytes, 0, bytes.length);
             Player.printProgress((i + 1), wavFrames.size());
         }
