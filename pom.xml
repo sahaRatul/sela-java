@@ -136,7 +136,7 @@
         - we want to break the build on any checkstyle violation.
         - we want to be able to publish coverage report to coveralls.
         -->
-        <profile>
+        <!--profile>
             <id>travis</id>
             <activation>
                 <property>
@@ -165,6 +165,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
+        </profile-->
     </profiles>
 </project>
