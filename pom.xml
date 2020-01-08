@@ -98,7 +98,7 @@
         You can run it with mvn -P jacoco test.
         It also activates itself on Travis.
         -->
-        <profile>
+        <!--profile>
             <id>jacoco</id>
             <activation>
                 <property>
@@ -129,7 +129,7 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
+        </profile-->
 
         <!--
         For the Travis profile:
