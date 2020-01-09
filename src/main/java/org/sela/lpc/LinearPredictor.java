@@ -1,6 +1,6 @@
 package org.sela.lpc;
 
-public class LinearPredictionBase {
+public class LinearPredictor {
     protected double[] reflectionCoefficients;
     protected int[] quantizedReflectionCoefficients;
     protected long[] linearPredictionCoefficients;
@@ -10,12 +10,12 @@ public class LinearPredictionBase {
     protected final int maxLpcOrder = 100;
     protected final int correctionFactor = 35;
 
-    public LinearPredictionBase() {
+    public LinearPredictor() {
         this.reflectionCoefficients = new double[maxLpcOrder];
         optimalLpcOrder = 1;
     }
 
-    public LinearPredictionBase(final int[] quantizedReflectionCoefficients, final byte optimalLpcOrder) {
+    public LinearPredictor(final int[] quantizedReflectionCoefficients, final byte optimalLpcOrder) {
         this.reflectionCoefficients = new double[maxLpcOrder];
         this.quantizedReflectionCoefficients = quantizedReflectionCoefficients;
         this.optimalLpcOrder = optimalLpcOrder;

@@ -14,12 +14,13 @@ import javax.sound.sampled.SourceDataLine;
 import org.sela.data.WavFrame;
 import org.sela.exception.FileException;
 
-public class Player extends Decoder {
+public class Player {
     private List<WavFrame> wavFrames;
+    private Decoder decoder;
 
     public Player(final File inputFile) throws IOException, FileException {
-        super(inputFile, null);
-        wavFrames = super.processFrames();
+        decoder = new Decoder(inputFile, null);
+        wavFrames = decoder.processFrames();
     }
 
     private static void printProgress(final long current, final long total) {
@@ -34,13 +35,13 @@ public class Player extends Decoder {
 
     public void play() throws LineUnavailableException {
         // Select audio format parameters
-        final AudioFormat af = new AudioFormat(super.selaFile.getSampleRate(), super.selaFile.getBitsPerSample(),
-                super.selaFile.getChannels(), true, false);
+        final AudioFormat af = new AudioFormat(decoder.selaFile.getSampleRate(), decoder.selaFile.getBitsPerSample(),
+                decoder.selaFile.getChannels(), true, false);
         final DataLine.Info info = new DataLine.Info(SourceDataLine.class, af);
         final SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
 
         // Prepare audio output
-        line.open(af, 2048 * super.selaFile.getChannels());
+        line.open(af, 2048 * decoder.selaFile.getChannels());
         line.start();
 
         // Output wave form repeatedly
