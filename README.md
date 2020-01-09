@@ -8,6 +8,7 @@ Java rewrite of the original [sela project](https://github.com/sahaRatul/sela).
 
 ### Build requirements
 - Open/Oracle JDK 8/13
+- Maven
 
 ### Build instructions
 - cd to the directory
