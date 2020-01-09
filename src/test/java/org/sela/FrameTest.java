@@ -18,7 +18,7 @@ public class FrameTest {
 
         // Generate a cosine wave for channel 2
         for (int i = 0; i < samples[1].length; i++) {
-            samples[1][i] = (int) (32767 * Math.sin(Math.toRadians(i)));
+            samples[1][i] = (int) (32767 * Math.cos(Math.toRadians(i)));
         }
 
         WavFrame input = new WavFrame(0, samples);
