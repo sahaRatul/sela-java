@@ -5,6 +5,12 @@ import java.nio.ByteBuffer;
 public final class SubFrame {
     // Audio Channel number - 1, 2, etc
     public byte channel;
+    // 0 - Subframe is independent, 1 - SubFrame uses difference coding and is
+    // dependent on another channel
+    public byte subFrameType;
+    // Incase subFrame uses difference coding, the channel from which difference is
+    // generated will be stored here
+    public byte parentChannelNumber;
 
     // Reflection coefficient data
     public byte reflectionCoefficientRiceParam;
@@ -18,9 +24,12 @@ public final class SubFrame {
     public short samplesPerChannel;
     public int[] encodedResidues;
 
-    public SubFrame(final byte channel, final RiceEncodedData reflectionData, final RiceEncodedData residueData) {
+    public SubFrame(final byte channel, final byte subFrameType, final byte parentChannelNumber,
+            final RiceEncodedData reflectionData, final RiceEncodedData residueData) {
         this.channel = channel;
-
+        this.subFrameType = subFrameType;
+        this.parentChannelNumber = parentChannelNumber;
+        
         this.reflectionCoefficientRiceParam = (byte) reflectionData.optimumRiceParam;
         this.reflectionCoefficientRequiredInts = (short) reflectionData.encodedData.length;
         this.optimumLpcOrder = (byte) reflectionData.dataCount;
@@ -33,11 +42,13 @@ public final class SubFrame {
     }
 
     public int getByteCount() {
-        return 10 + (4 * (encodedReflectionCoefficients.length + encodedResidues.length));
+        return 12 + (4 * (encodedReflectionCoefficients.length + encodedResidues.length));
     }
 
     public void write(final ByteBuffer buffer) {
         buffer.put(channel);
+        buffer.put(subFrameType);
+        buffer.put(parentChannelNumber);
 
         buffer.put(reflectionCoefficientRiceParam);
         buffer.putShort(reflectionCoefficientRequiredInts);
