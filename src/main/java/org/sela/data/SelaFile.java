@@ -78,6 +78,8 @@ public final class SelaFile {
             for (int j = 0; j < channels; j++) {
                 // Get channel
                 final byte subFrameChannel = buffer.get();
+                final byte subFrameType = buffer.get();
+                final byte parentChannelNumber = buffer.get();
 
                 // Get Reflection data
                 final byte reflectionCoefficientRiceParam = buffer.get();
@@ -103,7 +105,8 @@ public final class SelaFile {
                         optimumLpcOrder, encodedReflectionCoefficients);
                 final RiceEncodedData residueData = new RiceEncodedData(residueRiceParam, samplesPerChannel,
                         encodedResidues);
-                final SubFrame subFrame = new SubFrame(subFrameChannel, reflectionData, residueData);
+                final SubFrame subFrame = new SubFrame(subFrameChannel, subFrameType, parentChannelNumber,
+                        reflectionData, residueData);
                 frame.subFrames.add(subFrame);
             }
             frames.add(frame);
