@@ -22,7 +22,7 @@ public final class FrameEncoder {
                 // Stage 1 - Generate difference signal
                 int[] differenceSignal = new int[wavFrame.samples[i].length];
                 for (int j = 0; j < differenceSignal.length; j++) {
-                    differenceSignal[j] = wavFrame.samples[i][j - 1] - wavFrame.samples[i][j];
+                    differenceSignal[j] = wavFrame.samples[i - 1][j] - wavFrame.samples[i][j];
                 }
 
                 // Stage 2 - Generate residues and reflection coefficients for difference as

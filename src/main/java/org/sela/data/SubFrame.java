@@ -42,7 +42,7 @@ public final class SubFrame {
     }
 
     public int getByteCount() {
-        return 10 + (4 * (encodedReflectionCoefficients.length + encodedResidues.length));
+        return 12 + (4 * (encodedReflectionCoefficients.length + encodedResidues.length));
     }
 
     public void write(final ByteBuffer buffer) {
