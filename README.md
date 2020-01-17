@@ -7,7 +7,7 @@ Java rewrite of the original [sela project](https://github.com/sahaRatul/sela).
 ![Decoder](https://cloud.githubusercontent.com/assets/12273725/8868418/cbb6a1dc-31f5-11e5-91f6-8290766baa34.png)
 
 ### Build requirements
-- Open/Oracle JDK 8/13
+- Open/Oracle JDK >=11
 - Maven
 
 ### Build instructions
