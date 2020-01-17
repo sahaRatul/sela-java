@@ -15,8 +15,8 @@ import org.sela.data.WavFrame;
 import org.sela.exception.FileException;
 
 public class Player {
-    private List<WavFrame> wavFrames;
-    private Decoder decoder;
+    private final List<WavFrame> wavFrames;
+    private final Decoder decoder;
 
     public Player(final File inputFile) throws IOException, FileException {
         decoder = new Decoder(inputFile, null);
@@ -34,9 +34,9 @@ public class Player {
         line.open(af, 2048 * decoder.selaFile.getChannels());
         line.start();
 
-        //Prepare print thread
-        PlayProgress progress = new PlayProgress(wavFrames.size());
-        Thread printThread = new Thread(new ProgressPrinter(progress));
+        // Prepare print thread
+        final PlayProgress progress = new PlayProgress(wavFrames.size());
+        final Thread printThread = new Thread(new ProgressPrinter(progress));
         printThread.start();
 
         // Output wave form repeatedly
@@ -52,18 +52,25 @@ public class Player {
     }
 }
 
-// A separate thread for printing is required since audio lags when we print as well as play audio on single thread on Windows. 
+// A separate thread for printing is required since audio lags when we print as
+// well as play audio on single thread on Windows.
 class ProgressPrinter implements Runnable {
-    private PlayProgress progress;
-    public ProgressPrinter(PlayProgress progress) {
+    private final PlayProgress progress;
+
+    public ProgressPrinter(final PlayProgress progress) {
         this.progress = progress;
     }
 
     public void run() {
         while (progress.currentFrameNumber < progress.totalFrameCount) {
             printProgress(progress.currentFrameNumber, progress.totalFrameCount);
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        printProgress(progress.currentFrameNumber, progress.totalFrameCount); //Print one last time to make it 100%
+        printProgress(progress.currentFrameNumber, progress.totalFrameCount); // Print one last time to make it 100%
     }
 
     private void printProgress(final long current, final long total) {
@@ -77,12 +84,13 @@ class ProgressPrinter implements Runnable {
     }
 }
 
-// Data Class for keeping track of progress. Will be shared between audio thread and print thread
+// Data Class for keeping track of progress. Will be shared between audio thread
+// and print thread
 class PlayProgress {
     public volatile int currentFrameNumber;
     public final int totalFrameCount;
 
-    public PlayProgress(int totalFrameCount) {
+    public PlayProgress(final int totalFrameCount) {
         currentFrameNumber = 0;
         this.totalFrameCount = totalFrameCount;
     }
