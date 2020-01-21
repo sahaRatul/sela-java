@@ -2,7 +2,6 @@ package org.sela;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import javax.sound.sampled.AudioFormat;
@@ -11,8 +10,10 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
+import org.sela.data.Progress;
 import org.sela.data.WavFrame;
 import org.sela.exception.FileException;
+import org.sela.utils.ProgressPrinter;
 
 public class Player {
     private final List<WavFrame> wavFrames;
@@ -35,7 +36,7 @@ public class Player {
         line.start();
 
         // Prepare print thread
-        final PlayProgress progress = new PlayProgress(wavFrames.size());
+        final Progress progress = new Progress(wavFrames.size());
         final Thread printThread = new Thread(new ProgressPrinter(progress));
         printThread.start();
 
@@ -43,55 +44,11 @@ public class Player {
         for (int i = 0; i < wavFrames.size(); i++) {
             final byte[] bytes = wavFrames.get(i).getDemuxedShortSamplesInByteArray();
             line.write(bytes, 0, bytes.length);
-            progress.currentFrameNumber++;
+            progress.current++;
         }
         printThread.join();
         line.drain();
         line.stop();
         line.close();
-    }
-}
-
-// A separate thread for printing is required since audio lags when we print as
-// well as play audio on single thread on Windows.
-class ProgressPrinter implements Runnable {
-    private final PlayProgress progress;
-
-    public ProgressPrinter(final PlayProgress progress) {
-        this.progress = progress;
-    }
-
-    public void run() {
-        while (progress.currentFrameNumber < progress.totalFrameCount) {
-            printProgress(progress.currentFrameNumber, progress.totalFrameCount);
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        printProgress(progress.currentFrameNumber, progress.totalFrameCount); // Print one last time to make it 100%
-    }
-
-    private void printProgress(final long current, final long total) {
-        final StringBuilder string = new StringBuilder(140);
-        final int percent = (int) (current * 100 / total);
-        string.append('\r').append(String.format("%d%% [", percent))
-                .append(String.join("", Collections.nCopies(percent / 2, "="))).append(">")
-                .append(String.join("", Collections.nCopies(50 - (percent / 2), " "))).append(']').append(" (")
-                .append(current).append('/').append(total).append(')');
-        System.out.print(string);
-    }
-}
-
-// Data Class for keeping track of progress. Will be shared between audio thread
-// and print thread
-class PlayProgress {
-    public volatile int currentFrameNumber;
-    public final int totalFrameCount;
-
-    public PlayProgress(final int totalFrameCount) {
-        currentFrameNumber = 0;
-        this.totalFrameCount = totalFrameCount;
     }
 }
