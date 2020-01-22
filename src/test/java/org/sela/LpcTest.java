@@ -27,4 +27,28 @@ public class LpcTest {
 
         assertArrayEquals(input.samples, decoded.samples);
     }
+
+    @Test
+    public void testResidueSample24Bits() {
+        // Generate a sine wave
+        int[] samples = new int[2048];
+        for (int i = 0; i < samples.length; i++) {
+            //32767
+            //8388607
+            //2147483647
+            samples[i] = (int) (8388607 * Math.sin(Math.toRadians(i)));
+        }
+
+        LpcDecodedData input = new LpcDecodedData(samples, (byte)24);
+
+        // Generate residues
+        ResidueGenerator resGen = new ResidueGenerator(input);
+        LpcEncodedData encoded = resGen.process();
+
+        // Generate samples
+        SampleGenerator sampleGen = new SampleGenerator(encoded);
+        LpcDecodedData decoded = sampleGen.process();
+
+        assertArrayEquals(input.samples, decoded.samples);
+    }
 }

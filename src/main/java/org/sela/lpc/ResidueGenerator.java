@@ -21,7 +21,7 @@ public final class ResidueGenerator {
         this.autocorrelationFactors = new double[linearPredictor.maxLpcOrder + 1];
         this.residues = new int[samples.length];
         this.bitsPerSample = data.bitsPerSample;
-        this.quantizationFactor = data.bitsPerSample == 16 ? 32767 : 8388607;
+        this.quantizationFactor = data.bitsPerSample == 16 ? 32767 : 2147483647;
     }
 
     private void quantizeSamples() {

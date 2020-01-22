@@ -31,21 +31,31 @@ public class WavFrame implements Comparable<WavFrame> {
         return samples.length * samples[0].length * (bitsPerSample / 8);
     }
 
-    public byte[] getDemuxedShortSamplesInByteArray() {
+    public byte[] getDemuxedSamplesInByteArray(final byte bytesPerSample) {
         // Demux
-        final short[] demuxed = new short[samples.length * samples[0].length];
+        final int[] demuxed = new int[samples.length * samples[0].length];
         for (int i = 0; i < samples.length; i++) {
             for (int j = 0; j < samples[i].length; j++) {
-                demuxed[j * samples.length + i] = (short) samples[i][j];
+                demuxed[j * samples.length + i] = samples[i][j];
             }
         }
 
         // Write to buffer
-        final byte[] bytes = new byte[demuxed.length * 2];
+        final byte[] bytes = new byte[demuxed.length * bytesPerSample];
         final ByteBuffer buffer = ByteBuffer.wrap(bytes);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
-        for (int i = 0; i < demuxed.length; i++) {
-            buffer.putShort(demuxed[i]);
+
+        if (bytesPerSample == 2) {
+            for (int i = 0; i < demuxed.length; i++) {
+                buffer.putShort((short)demuxed[i]);
+            }
+        }
+        if (bytesPerSample == 3) {
+            for (int i = 0; i < demuxed.length; i++) {
+                for (int j = bytesPerSample; j >= 1; j--) {
+                    buffer.put((byte)(demuxed[i] >>> (j * 8)));
+                }
+            }
         }
         return buffer.array();
     }

@@ -41,8 +41,9 @@ public class Player {
         printThread.start();
 
         // Output wave form repeatedly
+        byte bytesPerSample = (byte) ((byte) decoder.selaFile.getBitsPerSample() / 8);
         for (int i = 0; i < wavFrames.size(); i++) {
-            final byte[] bytes = wavFrames.get(i).getDemuxedShortSamplesInByteArray();
+            final byte[] bytes = wavFrames.get(i).getDemuxedSamplesInByteArray(bytesPerSample);
             line.write(bytes, 0, bytes.length);
             progress.current++;
         }

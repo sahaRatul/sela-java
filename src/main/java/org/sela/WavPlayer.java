@@ -44,10 +44,6 @@ public class WavPlayer {
     public void play() throws LineUnavailableException, InterruptedException, FileException, IOException {
         readSamples();
 
-        final WavFile outputWav = new WavFile(wavFile.getSampleRate(), wavFile.getBitsPerSample(),
-        (byte)wavFile.getNumChannels(), wavFrames, new FileOutputStream(new File("c://temp//output.wav")));
-        outputWav.writeToStream();
-
         // Select audio format parameters
         final AudioFormat af = new AudioFormat(wavFile.getSampleRate(), wavFile.getBitsPerSample(),
                 wavFile.getNumChannels(), true, false);
@@ -64,8 +60,9 @@ public class WavPlayer {
         printThread.start();
 
         // Output wave form repeatedly
+        byte bytesPerSample = (byte) ((byte) wavFile.getBitsPerSample() / 8);
         for (int i = 0; i < wavFrames.size(); i++) {
-            final byte[] bytes = wavFrames.get(i).getDemuxedShortSamplesInByteArray();
+            final byte[] bytes = wavFrames.get(i).getDemuxedSamplesInByteArray(bytesPerSample);
             line.write(bytes, 0, bytes.length);
             progress.current++;
         }

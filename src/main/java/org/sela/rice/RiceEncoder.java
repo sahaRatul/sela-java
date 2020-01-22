@@ -10,15 +10,15 @@ public final class RiceEncoder {
     private final long[] unsignedInput;
     private int[] output;
     private int[] bitOutput;
-    private final ArrayList<Integer> bitSizes;
+    private final ArrayList<Long> bitSizes;
     private int optimumRiceParam;
-    private int requiredBits;
+    private long requiredBits;
     private final int maxRiceParam = 20;
 
     public RiceEncoder(final RiceDecodedData data) {
         this.input = data.decodedData;
         this.unsignedInput = new long[input.length];
-        this.bitSizes = new ArrayList<Integer>(maxRiceParam);
+        this.bitSizes = new ArrayList<Long>(maxRiceParam);
         optimumRiceParam = 0;
         requiredBits = 0;
     }
@@ -31,24 +31,25 @@ public final class RiceEncoder {
 
     private void calculateOptimumRiceParam() {
         for (int i = 0; i < maxRiceParam; i++) {
-            int temp = 0;
+            long temp = 0;
             for (int j = 0; j < unsignedInput.length; j++) {
-                temp += unsignedInput[j] >> i;
+                temp += (unsignedInput[j] >>> i);
                 temp += 1;
                 temp += i;
             }
-            bitSizes.add(temp);
-            requiredBits = Collections.min(bitSizes);
-            optimumRiceParam = bitSizes.indexOf(requiredBits);
+            bitSizes.add(temp < 0 ? Long.MAX_VALUE : temp);
         }
+        requiredBits = Collections.min(bitSizes);
+        optimumRiceParam = bitSizes.indexOf(requiredBits);
     }
 
     private void generateEncodedBits() {
-        bitOutput = new int[(int) (Math.ceil((float) requiredBits / 32) * 32)];
-        int temp = 0, bits = 0;
+        bitOutput = new int[(int) (Math.ceil((double) requiredBits / 32) * 32)];
+        long temp = 0;
+        int bits = 0;
 
         for (int i = 0; i < unsignedInput.length; i++) {
-            temp = (int) (unsignedInput[i] >> optimumRiceParam);
+            temp = (unsignedInput[i] >>> optimumRiceParam);
             // Write out 'temp' number of ones
             for (int j = 0; j < temp; j++) {
                 bitOutput[bits++] = 0b1;
