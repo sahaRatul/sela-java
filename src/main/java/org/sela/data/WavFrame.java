@@ -28,7 +28,7 @@ public class WavFrame implements Comparable<WavFrame> {
     }
 
     public int getSizeInBytes() {
-        return samples.length * samples[0].length * (bitsPerSample / 2);
+        return samples.length * samples[0].length * (bitsPerSample / 8);
     }
 
     public byte[] getDemuxedShortSamplesInByteArray() {
