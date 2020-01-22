@@ -20,8 +20,8 @@ public class FormatSubChunk extends SubChunk {
         else if(audioFormat != 1) {
             throw new FileException("Invalid audioFormat");
         }
-        else if(bitsPerSample != 16) {
-            throw new FileException("Only 16bit PCM supported");
+        else if(!(bitsPerSample == 16 || bitsPerSample == 24)) {
+            throw new FileException("Only 16/24bit LE PCM supported");
         }
     }
 }
