@@ -1,6 +1,8 @@
 package org.sela;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +41,12 @@ public class WavPlayer {
         }
     }
 
-    public void play() throws LineUnavailableException, InterruptedException {
+    public void play() throws LineUnavailableException, InterruptedException, FileException, IOException {
         readSamples();
+
+        final WavFile outputWav = new WavFile(wavFile.getSampleRate(), wavFile.getBitsPerSample(),
+        (byte)wavFile.getNumChannels(), wavFrames, new FileOutputStream(new File("c://temp//output.wav")));
+        outputWav.writeToStream();
 
         // Select audio format parameters
         final AudioFormat af = new AudioFormat(wavFile.getSampleRate(), wavFile.getBitsPerSample(),
