@@ -170,8 +170,7 @@ public class WavFile {
             }
         } else {
             for (int i = 0; i < sampleCount; i++) {
-                dataSubChunk.samples[i] = (buffer.get() & 0xFF) | (buffer.get() & 0xFF) << 8
-                        | (buffer.get() << 16);
+                dataSubChunk.samples[i] = (buffer.get() & 0xFF) | (buffer.get() & 0xFF) << 8 | (buffer.get() << 16);
             }
         }
         dataSubChunk.validate();
