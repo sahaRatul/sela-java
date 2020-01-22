@@ -39,7 +39,12 @@ public final class App {
         } else if (args[0].equals("-p") && args.length == 2) {
             final File inputFile = new File(args[1]);
             System.out.println("Playing: " + inputFile.getAbsolutePath());
-            playFile(inputFile);
+            playSelaFile(inputFile);
+            System.out.println("");
+        } else if(args[0].equals("-w") && args.length == 2) {
+            final File inputFile = new File(args[1]);
+            System.out.println("Playing: " + inputFile.getAbsolutePath());
+            playWavFile(inputFile);
             System.out.println("");
         } else {
             System.out.println("Invalid arguments...");
@@ -61,9 +66,14 @@ public final class App {
         wavFile.writeToStream();
     }
 
-    private static void playFile(final File inputFile) throws IOException, FileException, LineUnavailableException, InterruptedException {
+    private static void playSelaFile(final File inputFile) throws IOException, FileException, LineUnavailableException, InterruptedException {
         final Player selaPlayer = new Player(inputFile);
         selaPlayer.play();
+    }
+
+    private static void playWavFile(final File inputFile) throws IOException, FileException, LineUnavailableException, InterruptedException {
+        final WavPlayer wavPlayer = new WavPlayer(inputFile);
+        wavPlayer.play();
     }
 
     private static void printUsage() {
@@ -76,8 +86,11 @@ public final class App {
         System.out.println("Decoding a file:");
         System.out.println("java -jar sela.jar -d path/to/input.sela path/to/output.wav");
         System.out.println("");
-        System.out.println("Playing a file:");
+        System.out.println("Playing a sela file:");
         System.out.println("java -jar sela.jar -p path/to/input.sela");
+        System.out.println("");
+        System.out.println("Playing a sela file:");
+        System.out.println("java -jar sela.jar -w path/to/input.wav");
         System.out.println("");
     }
 }
