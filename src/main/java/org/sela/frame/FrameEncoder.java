@@ -28,11 +28,11 @@ public final class FrameEncoder {
                 // Stage 2 - Generate residues and reflection coefficients for difference as
                 // well as actual signal
                 final ResidueGenerator residueGeneratorDifference = new ResidueGenerator(
-                        new LpcDecodedData(differenceSignal));
+                        new LpcDecodedData(differenceSignal, wavFrame.getBitsPerSample()));
                 final LpcEncodedData residuesDifference = residueGeneratorDifference.process();
 
                 final ResidueGenerator residueGeneratorActual = new ResidueGenerator(
-                        new LpcDecodedData(wavFrame.samples[i]));
+                        new LpcDecodedData(wavFrame.samples[i], wavFrame.getBitsPerSample()));
                 final LpcEncodedData residuesActual = residueGeneratorActual.process();
 
                 // Stage 3 - Compress residues and reflection coefficients for difference and
@@ -65,7 +65,7 @@ public final class FrameEncoder {
                 }
             } else {
                 // Stage 1 - Generate residues and reflection coefficients
-                final ResidueGenerator residueGenerator = new ResidueGenerator(new LpcDecodedData(wavFrame.samples[i]));
+                final ResidueGenerator residueGenerator = new ResidueGenerator(new LpcDecodedData(wavFrame.samples[i], wavFrame.getBitsPerSample()));
                 final LpcEncodedData residues = residueGenerator.process();
 
                 // Stage 2 - Compress residues and reflection coefficients
@@ -81,6 +81,6 @@ public final class FrameEncoder {
             }
         }
 
-        return new Frame(subFrames, wavFrame.getIndex());
+        return new Frame(subFrames, wavFrame.getBitsPerSample(), wavFrame.getIndex());
     }
 }

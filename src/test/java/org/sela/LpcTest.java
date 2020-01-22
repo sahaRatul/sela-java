@@ -15,7 +15,7 @@ public class LpcTest {
             samples[i] = (int) (32767 * Math.sin(Math.toRadians(i)));
         }
 
-        LpcDecodedData input = new LpcDecodedData(samples);
+        LpcDecodedData input = new LpcDecodedData(samples, (byte)16);
 
         // Generate residues
         ResidueGenerator resGen = new ResidueGenerator(input);

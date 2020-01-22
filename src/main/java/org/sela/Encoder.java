@@ -32,7 +32,7 @@ public class Encoder {
         for (int i = 0; i < frameCount; i++) {
             final int[][] samples = new int[wavFile.getNumChannels()][samplePerSubFrame];
             wavFile.readFrames(samples, samplePerSubFrame);
-            wavFrames.add(new WavFrame(i, samples));
+            wavFrames.add(new WavFrame(i, samples, (byte)wavFile.getBitsPerSample()));
         }
     }
 

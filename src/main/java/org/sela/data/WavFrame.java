@@ -5,15 +5,21 @@ import java.nio.ByteOrder;
 
 public class WavFrame implements Comparable<WavFrame> {
     private final int index;
+    private final byte bitsPerSample;
     public int[][] samples;
 
-    public WavFrame(final int index, final int[][] samples) {
+    public WavFrame(final int index, final int[][] samples, final byte bitsPerSample) {
         this.index = index;
         this.samples = samples;
+        this.bitsPerSample = bitsPerSample;
     }
 
     public int getIndex() {
         return index;
+    }
+
+    public byte getBitsPerSample() {
+        return bitsPerSample;
     }
 
     @Override
@@ -22,7 +28,7 @@ public class WavFrame implements Comparable<WavFrame> {
     }
 
     public int getSizeInBytes() {
-        return samples.length * samples[0].length * 2; // Assuming 16 bit samples
+        return samples.length * samples[0].length * (bitsPerSample / 2);
     }
 
     public byte[] getDemuxedShortSamplesInByteArray() {

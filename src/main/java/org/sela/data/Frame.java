@@ -6,19 +6,26 @@ import java.util.ArrayList;
 public final class Frame implements Comparable<Frame> {
     public final int syncWord = 0xAA55FF00;
     public ArrayList<SubFrame> subFrames;
+    private final byte bitsPerSample; //For internal reference, not to be written on output
     private final int index; // For internal sorting, not to be written to output
 
-    public Frame(final ArrayList<SubFrame> subFrames, final int index) {
+    public Frame(final ArrayList<SubFrame> subFrames, final byte bitsPerSample, final int index) {
         this.subFrames = subFrames;
+        this.bitsPerSample = bitsPerSample;
         this.index = index;
     }
 
-    public Frame(final int index) {
+    public Frame(final int index, final byte bitsPerSample) {
         this.index = index;
+        this.bitsPerSample = bitsPerSample;
     }
 
     public int getIndex() {
         return index;
+    }
+
+    public byte getBitsPerSample() {
+        return bitsPerSample;
     }
 
     @Override

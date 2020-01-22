@@ -9,8 +9,9 @@ public final class ResidueGenerator {
     private final double[] quantizedSamples;
     private final double[] autocorrelationFactors;
     private final LinearPredictor linearPredictor;
+    private final byte bitsPerSample;
 
-    private final int maxShort = 32767;
+    private final int quantizationFactor;
     private final double sqrt2 = 1.4142135623730950488016887242096;
 
     public ResidueGenerator(final LpcDecodedData data) {
@@ -19,11 +20,13 @@ public final class ResidueGenerator {
         this.quantizedSamples = new double[samples.length];
         this.autocorrelationFactors = new double[linearPredictor.maxLpcOrder + 1];
         this.residues = new int[samples.length];
+        this.bitsPerSample = data.bitsPerSample;
+        this.quantizationFactor = data.bitsPerSample == 16 ? 32767 : 8388607;
     }
 
     private void quantizeSamples() {
         for (int i = 0; i < samples.length; i++) {
-            quantizedSamples[i] = (double) samples[i] / maxShort;
+            quantizedSamples[i] = (double) samples[i] / quantizationFactor;
         }
     }
 
@@ -94,7 +97,8 @@ public final class ResidueGenerator {
                     .floor(64 * (-1 + (sqrt2 * Math.sqrt(-linearPredictor.reflectionCoefficients[1] + 1))));
         }
         for (int i = 2; i < linearPredictor.optimalLpcOrder; i++) {
-            linearPredictor.quantizedReflectionCoefficients[i] = (int) Math.floor(64 * linearPredictor.reflectionCoefficients[i]);
+            linearPredictor.quantizedReflectionCoefficients[i] = (int) Math
+                    .floor(64 * linearPredictor.reflectionCoefficients[i]);
         }
     }
 
@@ -129,6 +133,7 @@ public final class ResidueGenerator {
         linearPredictor.dequantizeReflectionCoefficients();
         linearPredictor.generatelinearPredictionCoefficients();
         generateResidues();
-        return new LpcEncodedData(linearPredictor.optimalLpcOrder, linearPredictor.quantizedReflectionCoefficients, residues);
+        return new LpcEncodedData(linearPredictor.optimalLpcOrder, bitsPerSample,
+                linearPredictor.quantizedReflectionCoefficients, residues);
     }
 }

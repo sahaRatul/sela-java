@@ -197,7 +197,7 @@ public class WavFile {
 
         this.frames = new ArrayList<>(1);
         this.demuxedSamples = demuxedSamples;
-        this.frames.add(new WavFrame(0, demuxedSamples)); // Just for reference
+        this.frames.add(new WavFrame(0, demuxedSamples, (byte)getBitsPerSample())); // Just for reference
     }
 
     public short getNumChannels() {

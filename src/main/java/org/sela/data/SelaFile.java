@@ -71,7 +71,7 @@ public final class SelaFile {
             if (sync != 0xAA55FF00) {
                 break;
             }
-            final Frame frame = new Frame(i);
+            final Frame frame = new Frame(i, (byte)bitsPerSample);
             frame.subFrames = new ArrayList<>(2);
 
             // Read subframes
