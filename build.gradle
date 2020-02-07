@@ -4,13 +4,21 @@
 
 plugins {
     id 'java'
+    id 'jacoco'
     id 'maven-publish'
+    id 'org.sonarqube' version '2.8'
+}
+
+sonarqube {
+  properties {
+    property "sonar.projectKey", "sahaRatul_sela-java"
+  }
 }
 
 repositories {
     mavenLocal()
     maven {
-        url = 'http://repo.maven.apache.org/maven2'
+        url = 'https://repo.maven.apache.org/maven2'
     }
 }
 
