@@ -1,5 +1,5 @@
 language: java
-jdk: openjdk13
+jdk: openjdk11
 git:
   depth: false
 addons:
