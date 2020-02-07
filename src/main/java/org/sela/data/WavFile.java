@@ -103,10 +103,11 @@ public class WavFile {
     }
 
     private void generateFormatSubChunk() throws FileException {
-        if (!chunk.subChunks.stream().filter(x -> x.subChunkId.equals("fmt ")).findFirst().isPresent()) {
+        final SubChunk subChunk = chunk.subChunks.stream().filter(x -> x.subChunkId.equals("fmt ")).findFirst()
+                .orElse(null);
+        if (subChunk == null) {
             throw new FileException(fmtNotFound);
         }
-        final SubChunk subChunk = chunk.subChunks.stream().filter(x -> x.subChunkId.equals("fmt ")).findFirst().get();
         final int subChunkIndex = chunk.subChunks.indexOf(subChunk);
 
         final ByteBuffer buffer = ByteBuffer.wrap(subChunk.subChunkData);
@@ -146,18 +147,19 @@ public class WavFile {
 
     private void generateDataChunk() throws FileException {
         // Get Data subChunk
-        if (!chunk.subChunks.stream().filter(x -> x.subChunkId.equals("data")).findFirst().isPresent()) {
+        final SubChunk subChunk = chunk.subChunks.stream().filter(x -> x.subChunkId.equals("data")).findFirst()
+                .orElse(null);
+        if (subChunk == null) {
             throw new FileException(dataNotFound);
         }
-        final SubChunk subChunk = chunk.subChunks.stream().filter(x -> x.subChunkId.equals("data")).findFirst().get();
         final int subChunkIndex = chunk.subChunks.indexOf(subChunk);
 
         // Get fmt subChunk
-        if (!chunk.subChunks.stream().filter(x -> x.subChunkId.equals("fmt ")).findFirst().isPresent()) {
+        final FormatSubChunk formatSubChunk = (FormatSubChunk) chunk.subChunks.stream()
+                .filter(x -> x.subChunkId.equals("fmt ")).findFirst().orElse(null);
+        if (formatSubChunk == null) {
             throw new FileException(fmtNotFound);
         }
-        final FormatSubChunk formatSubChunk = (FormatSubChunk) chunk.subChunks.stream()
-                .filter(x -> x.subChunkId.equals("fmt ")).findFirst().get();
 
         final DataSubChunk dataSubChunk = new DataSubChunk((byte) formatSubChunk.bitsPerSample);
 
@@ -177,7 +179,8 @@ public class WavFile {
             }
         } else {
             for (int i = 0; i < sampleCount; i++) {
-                dataSubChunk.samples[i] = (buffer.get()) << 24 | (buffer.get() & 0xFF) << 16 | (buffer.get() & 0xFF) << 8;
+                dataSubChunk.samples[i] = (buffer.get()) << 24 | (buffer.get() & 0xFF) << 16
+                        | (buffer.get() & 0xFF) << 8;
             }
         }
         dataSubChunk.validate();
@@ -196,16 +199,17 @@ public class WavFile {
     }
 
     private void demuxSamples() throws FileException {
-        if (!chunk.subChunks.stream().filter(x -> x.subChunkId.equals("fmt ")).findFirst().isPresent()) {
+        final FormatSubChunk formatSubChunk = (FormatSubChunk) chunk.subChunks.stream()
+                .filter(x -> x.subChunkId.equals("fmt ")).findFirst().orElse(null);
+        final DataSubChunk dataSubChunk = (DataSubChunk) chunk.subChunks.stream()
+                .filter(x -> x.subChunkId.equals("data")).findFirst().orElse(null);
+
+        if (formatSubChunk == null) {
             throw new FileException(fmtNotFound);
         }
-        if (!chunk.subChunks.stream().filter(x -> x.subChunkId.equals("data")).findFirst().isPresent()) {
+        if (dataSubChunk == null) {
             throw new FileException(dataNotFound);
         }
-        final FormatSubChunk formatSubChunk = (FormatSubChunk) chunk.subChunks.stream()
-                .filter(x -> x.subChunkId.equals("fmt ")).findFirst().get();
-        final DataSubChunk dataSubChunk = (DataSubChunk) chunk.subChunks.stream()
-                .filter(x -> x.subChunkId.equals("data")).findFirst().get();
 
         final int[][] demuxedSamples = new int[formatSubChunk.numChannels][dataSubChunk.samples.length
                 / formatSubChunk.numChannels];
