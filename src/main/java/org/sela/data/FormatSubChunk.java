@@ -14,8 +14,8 @@ public class FormatSubChunk extends SubChunk {
         if(!super.subChunkId.equals("fmt ")) {
             throw new FileException("Invalid subChunkId for fmt");
         }
-        else if(!(bitsPerSample == 16 || bitsPerSample == 24)) {
-            throw new FileException("Only 16/24bit LE PCM supported");
+        else if(bitsPerSample != 16) {
+            throw new FileException("Only 16bit LE PCM supported");
         }
     }
 }
