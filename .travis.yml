@@ -1,8 +1,7 @@
 language: java
 jdk: openjdk11
 before_install:
-  wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip
-  mv sonar-scanner-cli-4.2.0.1873-linux.zip /home/travis/.sonarscanner/sonar-scanner.zip
+  wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip && mv sonar-scanner-cli-4.2.0.1873-linux.zip /home/travis/.sonarscanner/sonar-scanner.zip
 git:
   depth: false
 addons:
