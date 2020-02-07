@@ -18,7 +18,6 @@ jacocoTestReport {
 sonarqube {
   properties {
     property "sonar.projectKey", "sahaRatul_sela-java"
-    property "sonar.java.libraries", "${sourceSets.main.compileClasspath}"
   }
 }
 
