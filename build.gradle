@@ -18,6 +18,7 @@ jacocoTestReport {
 sonarqube {
   properties {
     property "sonar.projectKey", "sahaRatul_sela-java"
+    property "sonar.coverage.jacoco.xmlReportPaths" "build/reports/jacoco/test/jacocoTestReport.xml"
   }
 }
 
