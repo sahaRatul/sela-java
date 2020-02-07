@@ -18,7 +18,9 @@ jacocoTestReport {
 sonarqube {
   properties {
     property "sonar.projectKey", "sahaRatul_sela-java"
+    property "sonar.organization", "saharatul"
     property "sonar.java.libraries", "build/libs"
+    property "sonar.host.url", "https://sonarcloud.io"
   }
 }
 
