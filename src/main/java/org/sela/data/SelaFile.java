@@ -119,7 +119,10 @@ public final class SelaFile {
         }
 
         final byte[] inputBytes = new byte[inputStream.available()];
-        inputStream.read(inputBytes);
+        final int readCount = inputStream.read(inputBytes);
+        if (!(readCount > 0)) {
+            throw new FileException("InputStream read error");
+        }
 
         final ByteBuffer buffer = ByteBuffer.wrap(inputBytes);
         buffer.order(ByteOrder.LITTLE_ENDIAN);

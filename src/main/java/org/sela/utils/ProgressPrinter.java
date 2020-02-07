@@ -16,11 +16,6 @@ public class ProgressPrinter implements Runnable {
     public void run() {
         while (progress.getCurrent() < progress.total) {
             printProgress(progress.getCurrent(), progress.total);
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
         printProgress(progress.getCurrent(), progress.total); // Print one last time to make it 100%
     }
