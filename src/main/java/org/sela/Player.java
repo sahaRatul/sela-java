@@ -45,7 +45,7 @@ public class Player {
         for (int i = 0; i < wavFrames.size(); i++) {
             final byte[] bytes = wavFrames.get(i).getDemuxedSamplesInByteArray(bytesPerSample);
             line.write(bytes, 0, bytes.length);
-            progress.current.set(progress.current.get() + 1);
+            progress.setCurrent(progress.getCurrent() + 1);
         }
         printThread.join();
         line.drain();

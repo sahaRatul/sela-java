@@ -14,15 +14,15 @@ public class ProgressPrinter implements Runnable {
     }
 
     public void run() {
-        while (progress.current.get() < progress.total) {
-            printProgress(progress.current.get(), progress.total);
+        while (progress.getCurrent() < progress.total) {
+            printProgress(progress.getCurrent(), progress.total);
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        printProgress(progress.current.get(), progress.total); // Print one last time to make it 100%
+        printProgress(progress.getCurrent(), progress.total); // Print one last time to make it 100%
     }
 
     private void printProgress(final long current, final long total) {
