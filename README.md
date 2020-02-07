@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/sahaRatul/sela-java.svg?branch=master)](https://travis-ci.org/sahaRatul/sela-java)
+[![Lines of Code](https://tokei.rs/b1/github/sahaRatul/sela-java?category=code)](https://github.com/sahaRatul/sela-java)
+[![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
+
 # SELA
 ### SimplE Lossless Audio
 Java rewrite of the original [sela project](https://github.com/sahaRatul/sela).
@@ -26,5 +30,3 @@ Java rewrite of the original [sela project](https://github.com/sahaRatul/sela).
 - [FLAC overview](https://xiph.org/flac/documentation_format_overview.html)
 - [Paper on shorten, the original open source lossless codec](ftp://svr-ftp.eng.cam.ac.uk/pub/reports/robinson_tr156.ps.Z)
 - ISO/IEC 14496 Part 3, Subpart 11 (Audio Lossless Coding)
-
-### License : MIT
