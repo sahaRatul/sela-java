@@ -1,10 +1,10 @@
-[![Build Status](https://travis-ci.org/sahaRatul/sela-java.svg?branch=master)](https://travis-ci.org/sahaRatul/sela-java)
-[![Lines of Code](https://tokei.rs/b1/github/sahaRatul/sela-java?category=code)](https://github.com/sahaRatul/sela-java)
-[![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
-
 # SELA
 ### SimplE Lossless Audio
 Java rewrite of the original [sela project](https://github.com/sahaRatul/sela).
+
+[![Build Status](https://travis-ci.org/sahaRatul/sela-java.svg?branch=master)](https://travis-ci.org/sahaRatul/sela-java)
+[![Lines of Code](https://tokei.rs/b1/github/sahaRatul/sela-java?category=code)](https://github.com/sahaRatul/sela-java)
+[![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
 
 ### Block Diagrams
 ![Encoder](https://cloud.githubusercontent.com/assets/12273725/8868411/c24585e6-31f5-11e5-937a-e3c11c632704.png)
