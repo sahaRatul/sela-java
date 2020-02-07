@@ -47,16 +47,16 @@ public class WavFile {
     }
 
     private void allocateBuffer() throws IOException {
-        final DataInputStream inputStream = new DataInputStream(
-                new BufferedInputStream(new FileInputStream(inputFile)));
+        try (final DataInputStream inputStream = new DataInputStream(
+                new BufferedInputStream(new FileInputStream(inputFile)))) {
+            final byte[] bytes = new byte[(int) inputFile.length()];
+            inputStream.readFully(bytes);
 
-        final byte[] bytes = new byte[(int) inputFile.length()];
-        inputStream.readFully(bytes);
+            buffer = ByteBuffer.wrap(bytes);
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
 
-        buffer = ByteBuffer.wrap(bytes);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-
-        inputStream.close();
+            inputStream.close();
+        }
     }
 
     private void readChunk() throws FileException {
