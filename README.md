@@ -3,7 +3,8 @@
 Java rewrite of the original [sela project](https://github.com/sahaRatul/sela).
 
 [![Build Status](https://travis-ci.org/sahaRatul/sela-java.svg?branch=master)](https://travis-ci.org/sahaRatul/sela-java)
-[![Lines of Code](https://tokei.rs/b1/github/sahaRatul/sela-java?category=code)](https://github.com/sahaRatul/sela-java)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sahaRatul_sela-java&metric=alert_status)](https://sonarcloud.io/dashboard?id=sahaRatul_sela-java)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sahaRatul_sela-java&metric=ncloc)](https://sonarcloud.io/dashboard?id=sahaRatul_sela-java)
 [![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
 
 ### Block Diagrams
