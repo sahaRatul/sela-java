@@ -4,6 +4,7 @@ import org.sela.data.*;
 
 public final class SampleGenerator {
     private final int[] residues;
+    private final byte bitsPerSample;
     private final int[] samples;
     private final LinearPredictor linearPredictor;
 
@@ -11,6 +12,7 @@ public final class SampleGenerator {
         this.linearPredictor = new LinearPredictor(encodedData.quantizedReflectionCoefficients, encodedData.optimalLpcOrder);
         this.residues = encodedData.residues;
         this.samples = new int[residues.length];
+        this.bitsPerSample = encodedData.bitsPerSample;
     }
 
     private void generateSamples() {
@@ -38,6 +40,6 @@ public final class SampleGenerator {
         linearPredictor.dequantizeReflectionCoefficients();
         linearPredictor.generatelinearPredictionCoefficients();
         generateSamples();
-        return new LpcDecodedData(samples);
+        return new LpcDecodedData(samples, bitsPerSample);
     }
 }

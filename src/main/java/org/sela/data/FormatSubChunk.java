@@ -14,14 +14,8 @@ public class FormatSubChunk extends SubChunk {
         if(!super.subChunkId.equals("fmt ")) {
             throw new FileException("Invalid subChunkId for fmt");
         }
-        else if(super.subChunkSize != 16) {
-            throw new FileException("Invalid subChunk size");
-        }
-        else if(audioFormat != 1) {
-            throw new FileException("Invalid audioFormat");
-        }
         else if(bitsPerSample != 16) {
-            throw new FileException("Only 16bit PCM supported");
+            throw new FileException("Only 16bit LE PCM supported");
         }
     }
 }

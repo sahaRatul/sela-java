@@ -30,7 +30,7 @@ public final class FrameDecoder {
                 final RiceDecodedData decodedResidueData = (new RiceDecoder(residueData)).process();
 
                 // Stage 3 - Generate Samples
-                final LpcEncodedData encodedData = new LpcEncodedData(optimumLpcOrder,
+                final LpcEncodedData encodedData = new LpcEncodedData(optimumLpcOrder, frame.getBitsPerSample(),
                         decodedReflectionData.decodedData, decodedResidueData.decodedData);
                 final LpcDecodedData decoded = (new SampleGenerator(encodedData)).process();
                 samples[channel] = decoded.samples;
@@ -54,19 +54,20 @@ public final class FrameDecoder {
                 final RiceDecodedData decodedResidueData = (new RiceDecoder(residueData)).process();
 
                 // Stage 3 - Generate Difference signal
-                final LpcEncodedData encodedData = new LpcEncodedData(optimumLpcOrder,
+                final LpcEncodedData encodedData = new LpcEncodedData(optimumLpcOrder, frame.getBitsPerSample(),
                         decodedReflectionData.decodedData, decodedResidueData.decodedData);
-                final LpcDecodedData difference = (new SampleGenerator(encodedData)).process();
+                final LpcDecodedData difference = (new SampleGenerator(encodedData))
+                        .process();
 
                 int[] decoded = new int[difference.samples.length];
-                
-                //Stage 4 Generate samples
+
+                // Stage 4 Generate samples
                 for (int i = 0; i < decoded.length; i++) {
                     decoded[i] = samples[parentChannelNumber][i] - difference.samples[i];
                 }
                 samples[channel] = decoded;
             }
         }
-        return new WavFrame(frame.getIndex(), samples);
+        return new WavFrame(frame.getIndex(), samples, frame.getBitsPerSample());
     }
 }

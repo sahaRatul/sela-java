@@ -24,6 +24,7 @@ public class WavFile {
     private int readOffset;
     private int[][] demuxedSamples; // Used for reading
     private List<WavFrame> frames; // Used for writing
+    private short bitsPerSample;
 
     private DataOutputStream outputStream;
 
@@ -37,6 +38,7 @@ public class WavFile {
             final FileOutputStream fos) {
         this.outputStream = new DataOutputStream(new BufferedOutputStream(fos));
         this.frames = frames;
+        this.bitsPerSample = bitsPerSample;
         createChunk();
         createFormatSubChunk(sampleRate, channels, bitsPerSample);
         createDataChunk();
@@ -152,7 +154,7 @@ public class WavFile {
         final FormatSubChunk formatSubChunk = (FormatSubChunk) chunk.subChunks.stream()
                 .filter(x -> x.subChunkId.equals("fmt ")).findFirst().get();
 
-        final DataSubChunk dataSubChunk = new DataSubChunk();
+        final DataSubChunk dataSubChunk = new DataSubChunk((byte) formatSubChunk.bitsPerSample);
 
         final ByteBuffer buffer = ByteBuffer.wrap(subChunk.subChunkData);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -163,8 +165,15 @@ public class WavFile {
         final int bytesPerSample = formatSubChunk.bitsPerSample / 8;
         final int sampleCount = dataSubChunk.subChunkSize / bytesPerSample;
         dataSubChunk.samples = new int[sampleCount];
-        for (int i = 0; i < sampleCount; i++) {
-            dataSubChunk.samples[i] = buffer.getShort();
+
+        if (formatSubChunk.bitsPerSample == 16) {
+            for (int i = 0; i < sampleCount; i++) {
+                dataSubChunk.samples[i] = buffer.getShort();
+            }
+        } else {
+            for (int i = 0; i < sampleCount; i++) {
+                dataSubChunk.samples[i] = (buffer.get()) << 24 | (buffer.get() & 0xFF) << 16 | (buffer.get() & 0xFF) << 8;
+            }
         }
         dataSubChunk.validate();
         chunk.subChunks.set(subChunkIndex, dataSubChunk);
@@ -197,7 +206,7 @@ public class WavFile {
 
         this.frames = new ArrayList<>(1);
         this.demuxedSamples = demuxedSamples;
-        this.frames.add(new WavFrame(0, demuxedSamples)); // Just for reference
+        this.frames.add(new WavFrame(0, demuxedSamples, (byte) getBitsPerSample())); // Just for reference
     }
 
     public short getNumChannels() {
@@ -250,8 +259,9 @@ public class WavFile {
         chunk.write(buffer);
 
         // Write samples
+        byte bytesPerSample = (byte) ((byte) bitsPerSample / 8);
         for (int i = 0; i < frames.size(); i++) {
-            buffer.put(frames.get(i).getDemuxedShortSamplesInByteArray());
+            buffer.put(frames.get(i).getDemuxedSamplesInByteArray(bytesPerSample));
         }
 
         outputStream.write(buffer.array());
