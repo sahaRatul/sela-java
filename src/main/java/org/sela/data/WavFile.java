@@ -25,6 +25,8 @@ public class WavFile {
     private int[][] demuxedSamples; // Used for reading
     private List<WavFrame> frames; // Used for writing
     private short bitsPerSample;
+    private final String fmtNotFound = "fmt subchunk not found in wav";
+    private final String dataNotFound = "data subchunk not found in wav";
 
     private DataOutputStream outputStream;
 
@@ -102,7 +104,7 @@ public class WavFile {
 
     private void generateFormatSubChunk() throws FileException {
         if (!chunk.subChunks.stream().filter(x -> x.subChunkId.equals("fmt ")).findFirst().isPresent()) {
-            throw new FileException("fmt subchunk not found in wav");
+            throw new FileException(fmtNotFound);
         }
         final SubChunk subChunk = chunk.subChunks.stream().filter(x -> x.subChunkId.equals("fmt ")).findFirst().get();
         final int subChunkIndex = chunk.subChunks.indexOf(subChunk);
@@ -145,14 +147,14 @@ public class WavFile {
     private void generateDataChunk() throws FileException {
         // Get Data subChunk
         if (!chunk.subChunks.stream().filter(x -> x.subChunkId.equals("data")).findFirst().isPresent()) {
-            throw new FileException("data subchunk not found in wav");
+            throw new FileException(dataNotFound);
         }
         final SubChunk subChunk = chunk.subChunks.stream().filter(x -> x.subChunkId.equals("data")).findFirst().get();
         final int subChunkIndex = chunk.subChunks.indexOf(subChunk);
 
         // Get fmt subChunk
         if (!chunk.subChunks.stream().filter(x -> x.subChunkId.equals("fmt ")).findFirst().isPresent()) {
-            throw new FileException("fmt subchunk not found in wav");
+            throw new FileException(fmtNotFound);
         }
         final FormatSubChunk formatSubChunk = (FormatSubChunk) chunk.subChunks.stream()
                 .filter(x -> x.subChunkId.equals("fmt ")).findFirst().get();
@@ -195,10 +197,10 @@ public class WavFile {
 
     private void demuxSamples() throws FileException {
         if (!chunk.subChunks.stream().filter(x -> x.subChunkId.equals("fmt ")).findFirst().isPresent()) {
-            throw new FileException("fmt subchunk not found in wav");
+            throw new FileException(fmtNotFound);
         }
         if (!chunk.subChunks.stream().filter(x -> x.subChunkId.equals("data")).findFirst().isPresent()) {
-            throw new FileException("data subchunk not found in wav");
+            throw new FileException(dataNotFound);
         }
         final FormatSubChunk formatSubChunk = (FormatSubChunk) chunk.subChunks.stream()
                 .filter(x -> x.subChunkId.equals("fmt ")).findFirst().get();
