@@ -89,7 +89,7 @@ public final class App {
         System.out.println("Playing a sela file:");
         System.out.println("java -jar sela.jar -p path/to/input.sela");
         System.out.println("");
-        System.out.println("Playing a sela file:");
+        System.out.println("Playing a wav file:");
         System.out.println("java -jar sela.jar -w path/to/input.wav");
         System.out.println("");
     }
